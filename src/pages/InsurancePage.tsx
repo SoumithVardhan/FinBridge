@@ -1,9 +1,23 @@
 import React from 'react';
-import { Heart, UserCheck, Shield, Car, Home, Plane, CheckCircle, ArrowRight, Star } from 'lucide-react';
+import { Heart, UserCheck, Shield, Car, Home, Plane, CheckCircle, ArrowRight, Star, Calculator, Users, Calendar } from 'lucide-react';
 import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
+import { useState } from 'react';
 
 const InsurancePage: React.FC = () => {
+  const [selectedInsurance, setSelectedInsurance] = useState<string | null>(null);
+  const [quoteData, setQuoteData] = useState({
+    insuranceType: '',
+    coverage: '',
+    age: '',
+    members: '1',
+    name: '',
+    email: '',
+    phone: '',
+    medicalHistory: 'no'
+  });
+  const [quote, setQuote] = useState<any>(null);
+
   const insuranceTypes = [
     {
       type: 'Life Insurance',
@@ -85,6 +99,231 @@ const InsurancePage: React.FC = () => {
     }
   ];
 
+  const handleGetQuote = (insuranceType: string) => {
+    setSelectedInsurance(insuranceType);
+    setQuoteData(prev => ({ ...prev, insuranceType }));
+  };
+
+  const calculatePremium = () => {
+    const baseRates = {
+      'Life Insurance': 0.001,
+      'Health Insurance': 0.002,
+      'Motor Insurance': 0.03,
+      'Home Insurance': 0.001,
+      'Travel Insurance': 0.05,
+      'General Insurance': 0.002
+    };
+    
+    const coverage = parseInt(quoteData.coverage) || 0;
+    const age = parseInt(quoteData.age) || 25;
+    const members = parseInt(quoteData.members) || 1;
+    
+    const baseRate = baseRates[quoteData.insuranceType as keyof typeof baseRates] || 0.001;
+    let premium = coverage * baseRate + (age * 100) + (members * 500);
+    
+    // Add medical history loading
+    if (quoteData.medicalHistory === 'yes') {
+      premium *= 1.2;
+    }
+    
+    return Math.round(premium);
+  };
+
+  const handleQuoteSubmit = () => {
+    const premium = calculatePremium();
+    const quoteId = `QT${Date.now()}`;
+    
+    setQuote({
+      id: quoteId,
+      premium,
+      coverage: quoteData.coverage,
+      insuranceType: quoteData.insuranceType,
+      validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(),
+      features: [
+        'Cashless claim settlement',
+        '24/7 customer support',
+        'No waiting period for accidents',
+        'Comprehensive coverage'
+      ]
+    });
+  };
+
+  if (selectedInsurance) {
+    const insurance = insuranceTypes.find(i => i.type === selectedInsurance);
+    
+    return (
+      <div className="min-h-screen bg-gray-50 pt-16 animate-fade-in">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{insurance?.type} Quote</h1>
+            <p className="text-gray-600">Get instant premium calculation</p>
+          </div>
+
+          {!quote ? (
+            <Card>
+              <div className="space-y-6">
+                <h3 className="text-xl font-bold text-gray-900">Get Your Quote</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Coverage Amount (₹)</label>
+                    <select
+                      value={quoteData.coverage}
+                      onChange={(e) => setQuoteData(prev => ({ ...prev, coverage: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                    >
+                      <option value="">Select coverage</option>
+                      <option value="500000">₹5 Lakhs</option>
+                      <option value="1000000">₹10 Lakhs</option>
+                      <option value="2500000">₹25 Lakhs</option>
+                      <option value="5000000">₹50 Lakhs</option>
+                      <option value="10000000">₹1 Crore</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Your Age</label>
+                    <input
+                      type="number"
+                      value={quoteData.age}
+                      onChange={(e) => setQuoteData(prev => ({ ...prev, age: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      placeholder="Enter your age"
+                      min="18"
+                      max="80"
+                    />
+                  </div>
+                  {selectedInsurance === 'Health Insurance' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Family Members</label>
+                      <select
+                        value={quoteData.members}
+                        onChange={(e) => setQuoteData(prev => ({ ...prev, members: e.target.value }))}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      >
+                        <option value="1">Individual</option>
+                        <option value="2">Self + Spouse</option>
+                        <option value="3">Self + Spouse + 1 Child</option>
+                        <option value="4">Self + Spouse + 2 Children</option>
+                        <option value="5">Family Floater (5 members)</option>
+                      </select>
+                    </div>
+                  )}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                    <input
+                      type="text"
+                      value={quoteData.name}
+                      onChange={(e) => setQuoteData(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      placeholder="Enter full name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                    <input
+                      type="email"
+                      value={quoteData.email}
+                      onChange={(e) => setQuoteData(prev => ({ ...prev, email: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      placeholder="Enter email address"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                    <input
+                      type="tel"
+                      value={quoteData.phone}
+                      onChange={(e) => setQuoteData(prev => ({ ...prev, phone: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      placeholder="Enter phone number"
+                    />
+                  </div>
+                  {(selectedInsurance === 'Health Insurance' || selectedInsurance === 'Life Insurance') && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Pre-existing Medical Conditions</label>
+                      <select
+                        value={quoteData.medicalHistory}
+                        onChange={(e) => setQuoteData(prev => ({ ...prev, medicalHistory: e.target.value }))}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      >
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                      </select>
+                    </div>
+                  )}
+                </div>
+                <div className="flex justify-between">
+                  <Button variant="outline" onClick={() => setSelectedInsurance(null)}>
+                    Back to Insurance
+                  </Button>
+                  <Button onClick={handleQuoteSubmit} icon={Calculator}>
+                    Get Instant Quote
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          ) : (
+            <div className="space-y-6">
+              <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
+                <div className="text-center">
+                  <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Your Quote is Ready!</h3>
+                  <p className="text-gray-600 mb-6">Quote ID: {quote.id}</p>
+                  
+                  <div className="bg-white rounded-lg p-6 mb-6">
+                    <div className="text-4xl font-bold text-green-600 mb-2">
+                      ₹{quote.premium.toLocaleString()}/year
+                    </div>
+                    <div className="text-gray-600">Premium for ₹{parseInt(quote.coverage).toLocaleString()} coverage</div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left mb-6">
+                    <div className="bg-white rounded-lg p-4">
+                      <h4 className="font-semibold text-gray-900 mb-2">Coverage Details</h4>
+                      <ul className="space-y-1 text-sm text-gray-600">
+                        {quote.features.map((feature: string, index: number) => (
+                          <li key={index} className="flex items-center">
+                            <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-white rounded-lg p-4">
+                      <h4 className="font-semibold text-gray-900 mb-2">Quote Validity</h4>
+                      <p className="text-sm text-gray-600">Valid until: {quote.validUntil}</p>
+                      <p className="text-sm text-gray-600 mt-2">
+                        This quote is based on the information provided and is subject to medical underwriting.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button size="lg">
+                      Buy This Policy
+                    </Button>
+                    <Button size="lg" variant="outline">
+                      Download Quote
+                    </Button>
+                    <Button size="lg" variant="outline" onClick={() => {
+                      setQuote(null);
+                      setSelectedInsurance(null);
+                      setQuoteData({
+                        insuranceType: '', coverage: '', age: '', members: '1',
+                        name: '', email: '', phone: '', medicalHistory: 'no'
+                      });
+                    }}>
+                      Get New Quote
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 pt-16 animate-fade-in">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -145,12 +384,13 @@ const InsurancePage: React.FC = () => {
 
                   {/* Get Quote Button */}
                   <Button
+                    onClick={() => handleGetQuote(insurance.type)}
                     className="w-full mt-auto"
                     variant="secondary"
                     icon={ArrowRight}
                     iconPosition="right"
                   >
-                    Get Quote
+                    Get Instant Quote
                   </Button>
                 </div>
               </Card>

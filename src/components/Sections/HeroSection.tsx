@@ -15,10 +15,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSectionChange }) => {
   ];
 
   const scrollToServices = () => {
-    const servicesSection = document.getElementById('services-overview');
-    if (servicesSection) {
-      servicesSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    document.getElementById('services-overview')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (

@@ -1,10 +1,26 @@
 import React from 'react';
-import { TrendingUp, BarChart3, PieChart, Target, Shield, ArrowRight, Star, CheckCircle } from 'lucide-react';
+import { TrendingUp, BarChart3, PieChart, Target, Shield, ArrowRight, Star, CheckCircle, Calculator, CreditCard } from 'lucide-react';
 import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import SIPCalculator from '../components/Calculators/SIPCalculator';
+import { useState } from 'react';
 
 const MutualFundsPage: React.FC = () => {
+  const [selectedFund, setSelectedFund] = useState<string | null>(null);
+  const [investmentData, setInvestmentData] = useState({
+    fundType: '',
+    investmentType: 'sip',
+    amount: '',
+    tenure: '',
+    name: '',
+    email: '',
+    phone: '',
+    pan: '',
+    bankAccount: '',
+    ifsc: ''
+  });
+  const [sipProjection, setSipProjection] = useState<any>(null);
+
   const fundCategories = [
     {
       category: 'Equity Funds',
@@ -99,6 +115,289 @@ const MutualFundsPage: React.FC = () => {
     }
   ];
 
+  const handleStartSIP = (fundType: string) => {
+    setSelectedFund(fundType);
+    setInvestmentData(prev => ({ ...prev, fundType }));
+  };
+
+  const calculateSIPProjection = () => {
+    const monthlyAmount = parseInt(investmentData.amount) || 0;
+    const years = parseInt(investmentData.tenure) || 0;
+    
+    const expectedReturns = {
+      'Equity Funds': 12,
+      'Debt Funds': 7,
+      'Hybrid Funds': 10,
+      'ELSS Funds': 13,
+      'Index Funds': 11,
+      'Sectoral Funds': 15
+    };
+    
+    const annualReturn = expectedReturns[investmentData.fundType as keyof typeof expectedReturns] || 10;
+    const monthlyReturn = annualReturn / (12 * 100);
+    const months = years * 12;
+    
+    const maturityAmount = Math.round(
+      monthlyAmount * (((Math.pow(1 + monthlyReturn, months)) - 1) / monthlyReturn) * (1 + monthlyReturn)
+    );
+    
+    const totalInvestment = monthlyAmount * months;
+    const totalGains = maturityAmount - totalInvestment;
+    
+    return {
+      maturityAmount,
+      totalInvestment,
+      totalGains,
+      annualReturn
+    };
+  };
+
+  const handleInvestmentSubmit = () => {
+    const projection = calculateSIPProjection();
+    setSipProjection(projection);
+  };
+
+  if (selectedFund) {
+    const fund = fundCategories.find(f => f.category === selectedFund);
+    
+    return (
+      <div className="min-h-screen bg-gray-50 pt-16 animate-fade-in">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Start SIP in {fund?.category}</h1>
+            <p className="text-gray-600">Begin your systematic investment journey</p>
+          </div>
+
+          {!sipProjection ? (
+            <Card>
+              <div className="space-y-6">
+                <h3 className="text-xl font-bold text-gray-900">Investment Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Investment Type</label>
+                    <select
+                      value={investmentData.investmentType}
+                      onChange={(e) => setInvestmentData(prev => ({ ...prev, investmentType: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                    >
+                      <option value="sip">SIP (Systematic Investment Plan)</option>
+                      <option value="lumpsum">Lump Sum Investment</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {investmentData.investmentType === 'sip' ? 'Monthly Amount (₹)' : 'Investment Amount (₹)'}
+                    </label>
+                    <input
+                      type="number"
+                      value={investmentData.amount}
+                      onChange={(e) => setInvestmentData(prev => ({ ...prev, amount: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      placeholder={`Enter ${investmentData.investmentType === 'sip' ? 'monthly' : 'investment'} amount`}
+                      min={investmentData.investmentType === 'sip' ? '500' : '1000'}
+                    />
+                  </div>
+                  {investmentData.investmentType === 'sip' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Investment Period (Years)</label>
+                      <select
+                        value={investmentData.tenure}
+                        onChange={(e) => setInvestmentData(prev => ({ ...prev, tenure: e.target.value }))}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      >
+                        <option value="">Select period</option>
+                        {[...Array(30)].map((_, i) => (
+                          <option key={i} value={i + 1}>{i + 1} Year{i > 0 ? 's' : ''}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                    <input
+                      type="text"
+                      value={investmentData.name}
+                      onChange={(e) => setInvestmentData(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      placeholder="Enter full name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                    <input
+                      type="email"
+                      value={investmentData.email}
+                      onChange={(e) => setInvestmentData(prev => ({ ...prev, email: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      placeholder="Enter email address"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                    <input
+                      type="tel"
+                      value={investmentData.phone}
+                      onChange={(e) => setInvestmentData(prev => ({ ...prev, phone: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      placeholder="Enter phone number"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">PAN Number</label>
+                    <input
+                      type="text"
+                      value={investmentData.pan}
+                      onChange={(e) => setInvestmentData(prev => ({ ...prev, pan: e.target.value.toUpperCase() }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      placeholder="Enter PAN number"
+                      maxLength={10}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Bank Account Number</label>
+                    <input
+                      type="text"
+                      value={investmentData.bankAccount}
+                      onChange={(e) => setInvestmentData(prev => ({ ...prev, bankAccount: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      placeholder="Enter bank account number"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">IFSC Code</label>
+                    <input
+                      type="text"
+                      value={investmentData.ifsc}
+                      onChange={(e) => setInvestmentData(prev => ({ ...prev, ifsc: e.target.value.toUpperCase() }))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      placeholder="Enter IFSC code"
+                      maxLength={11}
+                    />
+                  </div>
+                </div>
+                
+                {investmentData.investmentType === 'sip' && investmentData.amount && investmentData.tenure && (
+                  <div className="bg-blue-50 rounded-lg p-6">
+                    <h4 className="font-semibold text-gray-900 mb-4">Investment Projection</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                      <div>
+                        <div className="text-2xl font-bold text-blue-600">
+                          ₹{(parseInt(investmentData.amount) * parseInt(investmentData.tenure) * 12).toLocaleString()}
+                        </div>
+                        <div className="text-sm text-gray-600">Total Investment</div>
+                      </div>
+                      <div>
+                        <div className="text-2xl font-bold text-green-600">
+                          ₹{calculateSIPProjection().maturityAmount.toLocaleString()}
+                        </div>
+                        <div className="text-sm text-gray-600">Maturity Value</div>
+                      </div>
+                      <div>
+                        <div className="text-2xl font-bold text-purple-600">
+                          ₹{calculateSIPProjection().totalGains.toLocaleString()}
+                        </div>
+                        <div className="text-sm text-gray-600">Expected Gains</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                <div className="flex justify-between">
+                  <Button variant="outline" onClick={() => setSelectedFund(null)}>
+                    Back to Funds
+                  </Button>
+                  <Button onClick={handleInvestmentSubmit} icon={Calculator}>
+                    Start Investment
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          ) : (
+            <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
+              <div className="text-center">
+                <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Investment Started Successfully!</h3>
+                <p className="text-gray-600 mb-6">SIP ID: SIP{Date.now()}</p>
+                
+                <div className="bg-white rounded-lg p-6 mb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-4">Investment Summary</h4>
+                      <div className="space-y-2 text-sm text-left">
+                        <div className="flex justify-between">
+                          <span>Fund Type:</span>
+                          <span className="font-medium">{investmentData.fundType}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Monthly SIP:</span>
+                          <span className="font-medium">₹{parseInt(investmentData.amount).toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Investment Period:</span>
+                          <span className="font-medium">{investmentData.tenure} years</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Expected Return:</span>
+                          <span className="font-medium">{sipProjection.annualReturn}% p.a.</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-4">Projected Returns</h4>
+                      <div className="space-y-2 text-sm text-left">
+                        <div className="flex justify-between">
+                          <span>Total Investment:</span>
+                          <span className="font-medium">₹{sipProjection.totalInvestment.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Expected Gains:</span>
+                          <span className="font-medium text-green-600">₹{sipProjection.totalGains.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between border-t pt-2">
+                          <span className="font-semibold">Maturity Value:</span>
+                          <span className="font-bold text-purple-600">₹{sipProjection.maturityAmount.toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-yellow-50 rounded-lg p-4 mb-6 text-left">
+                  <h4 className="font-semibold text-gray-900 mb-2">Next Steps:</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Complete KYC verification within 7 days</li>
+                    <li>• Set up auto-debit mandate for seamless investments</li>
+                    <li>• First SIP installment will be debited on the 1st of next month</li>
+                    <li>• Track your investments through our customer portal</li>
+                  </ul>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button size="lg" icon={CreditCard}>
+                    Complete KYC
+                  </Button>
+                  <Button size="lg" variant="outline">
+                    Download Confirmation
+                  </Button>
+                  <Button size="lg" variant="outline" onClick={() => {
+                    setSipProjection(null);
+                    setSelectedFund(null);
+                    setInvestmentData({
+                      fundType: '', investmentType: 'sip', amount: '', tenure: '',
+                      name: '', email: '', phone: '', pan: '', bankAccount: '', ifsc: ''
+                    });
+                  }}>
+                    Start New SIP
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 pt-16 animate-fade-in">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -161,11 +460,12 @@ const MutualFundsPage: React.FC = () => {
 
                   {/* Invest Button */}
                   <Button
+                    onClick={() => handleStartSIP(fund.category)}
                     className="w-full mt-auto"
                     icon={ArrowRight}
                     iconPosition="right"
                   >
-                    Start SIP
+                    Start SIP in {fund.category}
                   </Button>
                 </div>
               </Card>
