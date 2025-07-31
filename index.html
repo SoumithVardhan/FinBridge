@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinBridge - Your Complete Financial Partner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .page-section {
+            display: none;
+            min-height: calc(100vh - 64px);
+            padding-top: 80px;
+        }
+        .page-section.active {
+            display: block;
+        }
+        #home.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white shadow-lg z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="text-2xl font-bold text-indigo-600 cursor-pointer" onclick="showPage('home')">
+                        <i class="fas fa-bridge mr-2"></i>FinBridge
+                    </div>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#" onclick="showPage('home')" class="nav-link active px-3 py-2 rounded-md text-sm font-medium bg-indigo-100 text-indigo-700">
+                            <i class="fas fa-home mr-2"></i>Home
+                        </a>
+                        <a href="#" onclick="showPage('loans')" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-700 hover:bg-gray-50">
+                            <i class="fas fa-money-bill-wave mr-2"></i>Loans
+                        </a>
+                        <a href="#" onclick="showPage('insurance')" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-700 hover:bg-gray-50">
+                            <i class="fas fa-shield-alt mr-2"></i>Insurance
+                        </a>
+                        <a href="#" onclick="showPage('mutual-funds')" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-700 hover:bg-gray-50">
+                            <i class="fas fa-chart-line mr-2"></i>Mutual Funds
+                        </a>
+                        <a href="#" onclick="showPage('customer-portal')" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-700 hover:bg-gray-50">
+                            <i class="fas fa-user mr-2"></i>Customer Portal
+                        </a>
+                        <a href="#" onclick="showPage('contact')" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-700 hover:bg-gray-50">
+                            <i class="fas fa-phone mr-2"></i>Contact
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Page -->
+    <section id="home" class="page-section active gradient-bg min-h-screen flex items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="text-white">
+                    <h1 class="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                        Your Complete
+                        <span class="block text-yellow-300">Financial Partner</span>
+                    </h1>
+                    <p class="text-xl mb-8 text-gray-200 leading-relaxed">
+                        From loans to insurance, mutual funds to financial planning - 
+                        FinBridge provides comprehensive financial solutions tailored to your needs.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="showPage('customer-portal')" class="bg-white text-indigo-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors cursor-pointer">
+                            <i class="fas fa-rocket mr-2"></i>
+                            Get Started Today
+                        </button>
+                        <button onclick="scrollToServices()" class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-indigo-600 transition-colors cursor-pointer">
+                            <i class="fas fa-play mr-2"></i>
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+                <div class="animate-float">
+                    <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-3xl p-8 border border-white border-opacity-20">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="text-center text-white">
+                                <div class="text-3xl font-bold">500+</div>
+                                <div class="text-sm opacity-90">Happy Clients</div>
+                            </div>
+                            <div class="text-center text-white">
+                                <div class="text-3xl font-bold">₹50Cr+</div>
+                                <div class="text-sm opacity-90">Loans Processed</div>
+                            </div>
+                            <div class="text-center text-white">
+                                <div class="text-3xl font-bold">99%</div>
+                                <div class="text-sm opacity-90">Approval Rate</div>
+                            </div>
+                            <div class="text-center text-white">
+                                <div class="text-3xl font-bold">24/7</div>
+                                <div class="text-sm opacity-90">Support</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Overview on Home Page -->
+        <div id="services-section" class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                        Complete Financial Solutions
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        Experience the power of integrated financial services designed to help you achieve your goals
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="bg-white rounded-2xl p-8 card-hover cursor-pointer" onclick="showPage('loans')">
+                        <div class="text-center">
+                            <div class="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-money-bill-wave text-2xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-4">Loans</h3>
+                            <p class="text-gray-600 mb-6">Quick approval loans with competitive rates</p>
+                            <button onclick="event.stopPropagation(); showPage('loans')" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                                Explore Loans
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-8 card-hover cursor-pointer" onclick="showPage('insurance')">
+                        <div class="text-center">
+                            <div class="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-green-400 to-blue-500 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-shield-alt text-2xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-4">Insurance</h3>
+                            <p class="text-gray-600 mb-6">Comprehensive insurance coverage</p>
+                            <button onclick="event.stopPropagation(); showPage('insurance')" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                View Insurance
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-8 card-hover cursor-pointer" onclick="showPage('mutual-funds')">
+                        <div class="text-center">
+                            <div class="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-chart-line text-2xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-4">Mutual Funds</h3>
+                            <p class="text-gray-600 mb-6">Smart investment solutions</p>
+                            <button onclick="event.stopPropagation(); showPage('mutual-funds')" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                                Start Investing
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-8 card-hover cursor-pointer" onclick="showPage('customer-portal')">
+                        <div class="text-center">
+                            <div class="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-user text-2xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-4">Customer Portal</h3>
+                            <p class="text-gray-600 mb-6">Manage your accounts</p>
+                            <button onclick="event.stopPropagation(); showPage('customer-portal')" class="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition-colors">
+                                Access Portal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loans Page -->
+    <section id="loans" class="page-section bg-gray-50 py-20">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-2xl p-8 shadow-xl text-center">
+                <div class="text-6xl mb-6">💳</div>
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">Loans Section</h1>
+                <p class="text-xl text-gray-600 mb-8">Flexible financing solutions for all your personal and business needs</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 text-left">
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-indigo-600">
+                        <h3 class="font-bold text-gray-900 mb-2">Personal Loans</h3>
+                        <p class="text-gray-600 text-sm">Quick approval personal loans up to ₹50 lakhs with minimal documentation</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-indigo-600">
+                        <h3 class="font-bold text-gray-900 mb-2">Home Loans</h3>
+                        <p class="text-gray-600 text-sm">Affordable home loans with attractive interest rates and flexible tenure options</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-indigo-600">
+                        <h3 class="font-bold text-gray-900 mb-2">Business Loans</h3>
+                        <p class="text-gray-600 text-sm">Grow your business with our tailored business financing solutions</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-indigo-600">
+                        <h3 class="font-bold text-gray-900 mb-2">Education Loans</h3>
+                        <p class="text-gray-600 text-sm">Fund your education dreams with our comprehensive education loan schemes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Insurance Page -->
+    <section id="insurance" class="page-section bg-gray-50 py-20">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-2xl p-8 shadow-xl text-center">
+                <div class="text-6xl mb-6">🛡️</div>
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">Insurance Section</h1>
+                <p class="text-xl text-gray-600 mb-8">Comprehensive insurance solutions to protect what matters most</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 text-left">
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-green-600">
+                        <h3 class="font-bold text-gray-900 mb-2">Life Insurance</h3>
+                        <p class="text-gray-600 text-sm">Secure your family's future with our comprehensive life insurance plans</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-green-600">
+                        <h3 class="font-bold text-gray-900 mb-2">Health Insurance</h3>
+                        <p class="text-gray-600 text-sm">Complete healthcare coverage for you and your loved ones</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-green-600">
+                        <h3 class="font-bold text-gray-900 mb-2">Vehicle Insurance</h3>
+                        <p class="text-gray-600 text-sm">Protect your vehicles with our comprehensive auto insurance policies</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-green-600">
+                        <h3 class="font-bold text-gray-900 mb-2">Home Insurance</h3>
+                        <p class="text-gray-600 text-sm">Safeguard your home and belongings with our property insurance solutions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mutual Funds Page -->
+    <section id="mutual-funds" class="page-section bg-gray-50 py-20">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-2xl p-8 shadow-xl text-center">
+                <div class="text-6xl mb-6">📈</div>
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">Mutual Funds Section</h1>
+                <p class="text-xl text-gray-600 mb-8">Smart investment solutions to grow your wealth over time</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 text-left">
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-purple-600">
+                        <h3 class="font-bold text-gray-900 mb-2">Equity Funds</h3>
+                        <p class="text-gray-600 text-sm">High growth potential funds investing primarily in stocks for long-term wealth creation</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-purple-600">
+                        <h3 class="font-bold text-gray-900 mb-2">Debt Funds</h3>
+                        <p class="text-gray-600 text-sm">Stable income generating funds with lower risk, perfect for conservative investors</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-purple-600">
+                        <h3 class="font-bold text-gray-900 mb-2">Hybrid Funds</h3>
+                        <p class="text-gray-600 text-sm">Balanced approach combining equity and debt investments for optimal risk-return ratio</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-purple-600">
+                        <h3 class="font-bold text-gray-900 mb-2">SIP Plans</h3>
+                        <p class="text-gray-600 text-sm">Systematic Investment Plans for disciplined investing with as low as ₹500 per month</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Customer Portal Page -->
+    <section id="customer-portal" class="page-section bg-gray-50 py-20">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-2xl p-8 shadow-xl text-center">
+                <div class="text-6xl mb-6">👤</div>
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">Customer Portal</h1>
+                <p class="text-xl text-gray-600 mb-8">Secure access to manage your financial portfolio and services</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 text-left">
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-orange-600">
+                        <h3 class="font-bold text-gray-900 mb-2">Account Overview</h3>
+                        <p class="text-gray-600 text-sm">View all your investments, loans, and insurance policies in one comprehensive dashboard</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-orange-600">
+                        <h3 class="font-bold text-gray-900 mb-2">Transaction History</h3>
+                        <p class="text-gray-600 text-sm">Access detailed transaction records and download statements for all your financial activities</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-orange-600">
+                        <h3 class="font-bold text-gray-900 mb-2">Portfolio Management</h3>
+                        <p class="text-gray-600 text-sm">Track performance, rebalance investments, and make informed decisions about your portfolio</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-orange-600">
+                        <h3 class="font-bold text-gray-900 mb-2">Support Center</h3>
+                        <p class="text-gray-600 text-sm">Get help, raise tickets, and connect with our financial experts whenever you need assistance</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Page -->
+    <section id="contact" class="page-section bg-gray-900 text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <div class="text-6xl mb-6">📞</div>
+                <h2 class="text-4xl font-bold mb-4">Get In Touch</h2>
+                <p class="text-xl text-gray-300">Ready to start your financial journey? Contact us today!</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="bg-gray-800 rounded-xl p-6 card-hover text-center">
+                    <div class="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-phone text-white text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-white mb-2">Call Us</h4>
+                    <p class="text-gray-300 text-sm">+91 98765 43210</p>
+                </div>
+
+                <div class="bg-gray-800 rounded-xl p-6 card-hover text-center">
+                    <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fab fa-whatsapp text-white text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-white mb-2">WhatsApp</h4>
+                    <p class="text-gray-300 text-sm">+91 98765 43210</p>
+                </div>
+
+                <div class="bg-gray-800 rounded-xl p-6 card-hover text-center">
+                    <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-envelope text-white text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-white mb-2">Email</h4>
+                    <p class="text-gray-300 text-sm">info@finbridge.com</p>
+                </div>
+
+                <div class="bg-gray-800 rounded-xl p-6 card-hover text-center">
+                    <div class="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-map-marker-alt text-white text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-white mb-2">Visit Us</h4>
+                    <p class="text-gray-300 text-sm">Mumbai, Maharashtra</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageName) {
+            // Hide all page sections
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show the selected page
+            const targetSection = document.getElementById(pageName);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Update navigation active state
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('nav-active');
+            });
+            
+            // Add active class to current nav link
+            const currentNavLink = document.getElementById('nav-' + pageName);
+            if (currentNavLink) {
+                currentNavLink.classList.add('nav-active');
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function scrollToServices() {
+            const servicesSection = document.getElementById('services-section');
+            if (servicesSection) {
+                servicesSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('home');
+        });
+    </script>
+</body>
+</html> class="fas fa-map-marker-alt text-white text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-white mb-2">Visit Us</h4>
+                    <p class="text-gray-300 text-sm">Mumbai, Maharashtra</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="border-t border-gray-700 pt-8 text-center text-gray-300">
+                <p>&copy; 2025 FinBridge. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function showPage(pageName) {
+            // Hide all page sections
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show the selected page
+            const targetSection = document.getElementById(pageName);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Update navigation active state
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active', 'bg-indigo-100', 'text-indigo-700');
+                link.classList.add('text-gray-700');
+            });
+            
+            // Add active class to current nav link
+            const currentNavLink = document.querySelector(`a[onclick="showPage('${pageName}')"]`);
+            if (currentNavLink) {
+                currentNavLink.classList.remove('text-gray-700');
+                currentNavLink.classList.add('active', 'bg-indigo-100', 'text-indigo-700');
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function scrollToServices() {
+            const servicesSection = document.getElementById('services-section');
+            if (servicesSection) {
+                servicesSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('home');
+        });
+    </script>
+</body>
+</html>
