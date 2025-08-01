@@ -93,7 +93,7 @@ const LoansPage: React.FC = () => {
 
   const handleApplicationSubmit = () => {
     // Simulate application submission
-    alert(`Application submitted successfully! Reference ID: ${loanType.toUpperCase()}${Date.now()}`);
+    alert(`Application submitted successfully! Reference ID: ${applicationData.loanType.toUpperCase()}${Date.now()}`);
     setSelectedLoan(null);
     setApplicationStep(0);
     setApplicationData({
