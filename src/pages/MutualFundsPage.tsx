@@ -3,6 +3,9 @@ import { TrendingUp, BarChart3, PieChart, Target, Shield, ArrowRight, Star, Chec
 import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import SIPCalculator from '../components/Calculators/SIPCalculator';
+import FormField from '../components/UI/FormField';
+import SimpleChart from '../components/Charts/SimpleChart';
+import { useFormValidation, commonValidationRules } from '../hooks/useFormValidation';
 import { useState } from 'react';
 
 const MutualFundsPage: React.FC = () => {
@@ -20,6 +23,41 @@ const MutualFundsPage: React.FC = () => {
     ifsc: ''
   });
   const [sipProjection, setSipProjection] = useState<any>(null);
+
+  // Form validation
+  const investmentValidation = useFormValidation({
+    amount: {
+      required: true,
+      custom: (value: string) => {
+        const num = parseFloat(value);
+        if (isNaN(num) || num < 500) return 'Minimum SIP amount is ₹500';
+        if (num > 100000) return 'Maximum SIP amount is ₹1,00,000';
+        return null;
+      }
+    },
+    tenure: { required: true },
+    name: commonValidationRules.name,
+    email: commonValidationRules.email,
+    phone: commonValidationRules.phone,
+    pan: commonValidationRules.pan,
+    bankAccount: {
+      required: true,
+      minLength: 9,
+      maxLength: 18,
+      custom: (value: string) => {
+        if (!/^\d+$/.test(value)) return 'Bank account number should contain only digits';
+        return null;
+      }
+    },
+    ifsc: {
+      required: true,
+      pattern: /^[A-Z]{4}0[A-Z0-9]{6}$/,
+      custom: (value: string) => {
+        if (value.length !== 11) return 'IFSC code must be 11 characters';
+        return null;
+      }
+    }
+  });
 
   const fundCategories = [
     {
@@ -120,6 +158,24 @@ const MutualFundsPage: React.FC = () => {
     setInvestmentData(prev => ({ ...prev, fundType }));
   };
 
+  const handleInvestmentSubmit = () => {
+    const fieldsToValidate = {
+      amount: investmentData.amount,
+      tenure: investmentData.tenure,
+      name: investmentData.name,
+      email: investmentData.email,
+      phone: investmentData.phone,
+      pan: investmentData.pan,
+      bankAccount: investmentData.bankAccount,
+      ifsc: investmentData.ifsc
+    };
+    
+    if (investmentValidation.validateForm(fieldsToValidate)) {
+      const projection = calculateSIPProjection();
+      setSipProjection(projection);
+    }
+  };
+
   const calculateSIPProjection = () => {
     const monthlyAmount = parseInt(investmentData.amount) || 0;
     const years = parseInt(investmentData.tenure) || 0;
@@ -152,10 +208,13 @@ const MutualFundsPage: React.FC = () => {
     };
   };
 
-  const handleInvestmentSubmit = () => {
-    const projection = calculateSIPProjection();
-    setSipProjection(projection);
-  };
+  // Mock fund performance data
+  const fundPerformanceData = [
+    { label: '1Y', value: 12.5 },
+    { label: '3Y', value: 15.2 },
+    { label: '5Y', value: 13.8 },
+    { label: '10Y', value: 14.6 }
+  ];
 
   if (selectedFund) {
     const fund = fundCategories.find(f => f.category === selectedFund);
@@ -173,107 +232,125 @@ const MutualFundsPage: React.FC = () => {
               <div className="space-y-6">
                 <h3 className="text-xl font-bold text-gray-900">Investment Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Investment Type</label>
-                    <select
-                      value={investmentData.investmentType}
-                      onChange={(e) => setInvestmentData(prev => ({ ...prev, investmentType: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                    >
-                      <option value="sip">SIP (Systematic Investment Plan)</option>
-                      <option value="lumpsum">Lump Sum Investment</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {investmentData.investmentType === 'sip' ? 'Monthly Amount (₹)' : 'Investment Amount (₹)'}
-                    </label>
-                    <input
-                      type="number"
-                      value={investmentData.amount}
-                      onChange={(e) => setInvestmentData(prev => ({ ...prev, amount: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      placeholder={`Enter ${investmentData.investmentType === 'sip' ? 'monthly' : 'investment'} amount`}
-                      min={investmentData.investmentType === 'sip' ? '500' : '1000'}
-                    />
-                  </div>
+                  <FormField
+                    label="Investment Type"
+                    type="select"
+                    value={investmentData.investmentType}
+                    onChange={(value) => setInvestmentData(prev => ({ ...prev, investmentType: value }))}
+                    options={[
+                      { value: 'sip', label: 'SIP (Systematic Investment Plan)' },
+                      { value: 'lumpsum', label: 'Lump Sum Investment' }
+                    ]}
+                  />
+                  
+                  <FormField
+                    label={investmentData.investmentType === 'sip' ? 'Monthly Amount' : 'Investment Amount'}
+                    type="number"
+                    value={investmentData.amount}
+                    onChange={(value) => {
+                      setInvestmentData(prev => ({ ...prev, amount: value }));
+                      investmentValidation.clearError('amount');
+                    }}
+                    error={investmentValidation.errors.amount}
+                    placeholder={`Enter ${investmentData.investmentType === 'sip' ? 'monthly' : 'investment'} amount (₹)`}
+                    min={investmentData.investmentType === 'sip' ? '500' : '1000'}
+                    required
+                  />
+                  
                   {investmentData.investmentType === 'sip' && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Investment Period (Years)</label>
-                      <select
-                        value={investmentData.tenure}
-                        onChange={(e) => setInvestmentData(prev => ({ ...prev, tenure: e.target.value }))}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      >
-                        <option value="">Select period</option>
-                        {[...Array(30)].map((_, i) => (
-                          <option key={i} value={i + 1}>{i + 1} Year{i > 0 ? 's' : ''}</option>
-                        ))}
-                      </select>
-                    </div>
+                    <FormField
+                      label="Investment Period"
+                      type="select"
+                      value={investmentData.tenure}
+                      onChange={(value) => {
+                        setInvestmentData(prev => ({ ...prev, tenure: value }));
+                        investmentValidation.clearError('tenure');
+                      }}
+                      error={investmentValidation.errors.tenure}
+                      options={[...Array(30)].map((_, i) => ({
+                        value: (i + 1).toString(),
+                        label: `${i + 1} Year${i > 0 ? 's' : ''}`
+                      }))}
+                      placeholder="Select period"
+                      required
+                    />
                   )}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                    <input
-                      type="text"
-                      value={investmentData.name}
-                      onChange={(e) => setInvestmentData(prev => ({ ...prev, name: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      placeholder="Enter full name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                    <input
-                      type="email"
-                      value={investmentData.email}
-                      onChange={(e) => setInvestmentData(prev => ({ ...prev, email: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      placeholder="Enter email address"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                    <input
-                      type="tel"
-                      value={investmentData.phone}
-                      onChange={(e) => setInvestmentData(prev => ({ ...prev, phone: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      placeholder="Enter phone number"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">PAN Number</label>
-                    <input
-                      type="text"
-                      value={investmentData.pan}
-                      onChange={(e) => setInvestmentData(prev => ({ ...prev, pan: e.target.value.toUpperCase() }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      placeholder="Enter PAN number"
-                      maxLength={10}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Bank Account Number</label>
-                    <input
-                      type="text"
-                      value={investmentData.bankAccount}
-                      onChange={(e) => setInvestmentData(prev => ({ ...prev, bankAccount: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      placeholder="Enter bank account number"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">IFSC Code</label>
-                    <input
-                      type="text"
-                      value={investmentData.ifsc}
-                      onChange={(e) => setInvestmentData(prev => ({ ...prev, ifsc: e.target.value.toUpperCase() }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      placeholder="Enter IFSC code"
-                      maxLength={11}
-                    />
-                  </div>
+                  
+                  <FormField
+                    label="Full Name"
+                    value={investmentData.name}
+                    onChange={(value) => {
+                      setInvestmentData(prev => ({ ...prev, name: value }));
+                      investmentValidation.clearError('name');
+                    }}
+                    error={investmentValidation.errors.name}
+                    placeholder="Enter full name"
+                    required
+                  />
+                  
+                  <FormField
+                    label="Email Address"
+                    type="email"
+                    value={investmentData.email}
+                    onChange={(value) => {
+                      setInvestmentData(prev => ({ ...prev, email: value }));
+                      investmentValidation.clearError('email');
+                    }}
+                    error={investmentValidation.errors.email}
+                    placeholder="Enter email address"
+                    required
+                  />
+                  
+                  <FormField
+                    label="Phone Number"
+                    type="tel"
+                    value={investmentData.phone}
+                    onChange={(value) => {
+                      setInvestmentData(prev => ({ ...prev, phone: value }));
+                      investmentValidation.clearError('phone');
+                    }}
+                    error={investmentValidation.errors.phone}
+                    placeholder="Enter phone number"
+                    required
+                  />
+                  
+                  <FormField
+                    label="PAN Number"
+                    value={investmentData.pan}
+                    onChange={(value) => {
+                      setInvestmentData(prev => ({ ...prev, pan: value.toUpperCase() }));
+                      investmentValidation.clearError('pan');
+                    }}
+                    error={investmentValidation.errors.pan}
+                    placeholder="Enter PAN number"
+                    maxLength={10}
+                    required
+                  />
+                  
+                  <FormField
+                    label="Bank Account Number"
+                    value={investmentData.bankAccount}
+                    onChange={(value) => {
+                      setInvestmentData(prev => ({ ...prev, bankAccount: value }));
+                      investmentValidation.clearError('bankAccount');
+                    }}
+                    error={investmentValidation.errors.bankAccount}
+                    placeholder="Enter bank account number"
+                    required
+                  />
+                  
+                  <FormField
+                    label="IFSC Code"
+                    value={investmentData.ifsc}
+                    onChange={(value) => {
+                      setInvestmentData(prev => ({ ...prev, ifsc: value.toUpperCase() }));
+                      investmentValidation.clearError('ifsc');
+                    }}
+                    error={investmentValidation.errors.ifsc}
+                    placeholder="Enter IFSC code"
+                    maxLength={11}
+                    required
+                  />
                 </div>
                 
                 {investmentData.investmentType === 'sip' && investmentData.amount && investmentData.tenure && (
@@ -386,6 +463,7 @@ const MutualFundsPage: React.FC = () => {
                       fundType: '', investmentType: 'sip', amount: '', tenure: '',
                       name: '', email: '', phone: '', pan: '', bankAccount: '', ifsc: ''
                     });
+                    investmentValidation.clearAllErrors();
                   }}>
                     Start New SIP
                   </Button>
@@ -476,6 +554,19 @@ const MutualFundsPage: React.FC = () => {
         {/* SIP Calculator */}
         <div className="mb-16">
           <SIPCalculator />
+        </div>
+
+        {/* Fund Performance Chart */}
+        <div className="mb-16">
+          <Card>
+            <SimpleChart
+              data={fundPerformanceData}
+              type="bar"
+              title="Average Fund Performance Across Categories"
+              height={250}
+              showTrend={true}
+            />
+          </Card>
         </div>
 
         {/* Top Performing Funds */}
