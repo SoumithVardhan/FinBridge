@@ -51,7 +51,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSectionChange }) => {
                 onClick={() => onSectionChange('portal')}
                 icon={ArrowRight}
                 iconPosition="right"
-                className="bg-white text-primary-600 hover:bg-gray-100 transform hover:scale-105"
+                className="!bg-white !text-indigo-600 hover:!bg-gray-100 font-semibold shadow-lg"
               >
                 Get Started Today
               </Button>
@@ -59,7 +59,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSectionChange }) => {
                 size="lg"
                 variant="outline"
                 onClick={scrollToServices}
-                className="border-white text-white hover:bg-white hover:text-primary-600"
+                className="!border-2 !border-white !text-white hover:!bg-white hover:!text-indigo-600 font-semibold"
               >
                 Learn More
               </Button>
