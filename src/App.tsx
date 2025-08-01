@@ -36,7 +36,7 @@ function App() {
       <main>
         {renderCurrentSection()}
       </main>
-      <Footer />
+      <Footer onSectionChange={setCurrentSection} />
     </div>
   );
 }

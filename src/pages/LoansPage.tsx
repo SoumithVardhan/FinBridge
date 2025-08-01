@@ -3,6 +3,9 @@ import { Home, User, Briefcase, GraduationCap, Car, Building, CheckCircle, Arrow
 import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import EMICalculator from '../components/Calculators/EMICalculator';
+import FormField from '../components/UI/FormField';
+import ProgressSteps from '../components/UI/ProgressSteps';
+import { useFormValidation, commonValidationRules } from '../hooks/useFormValidation';
 import { useState } from 'react';
 
 const LoansPage: React.FC = () => {
@@ -18,7 +21,47 @@ const LoansPage: React.FC = () => {
     email: '',
     phone: '',
     pan: '',
-    documents: []
+    address: '',
+    city: '',
+    pincode: '',
+    documents: [] as string[]
+  });
+
+  // Form validation rules
+  const loanValidation = useFormValidation({
+    amount: {
+      required: true,
+      custom: (value: string) => {
+        const num = parseFloat(value);
+        if (isNaN(num) || num < 100000) return 'Minimum loan amount is ₹1,00,000';
+        if (num > 100000000) return 'Maximum loan amount is ₹10,00,00,000';
+        return null;
+      }
+    },
+    tenure: { required: true },
+    income: {
+      required: true,
+      custom: (value: string) => {
+        const num = parseFloat(value);
+        if (isNaN(num) || num < 15000) return 'Minimum monthly income should be ₹15,000';
+        return null;
+      }
+    },
+    employment: { required: true },
+    name: commonValidationRules.name,
+    email: commonValidationRules.email,
+    phone: commonValidationRules.phone,
+    pan: commonValidationRules.pan,
+    address: { required: true, minLength: 10 },
+    city: { required: true, minLength: 2 },
+    pincode: {
+      required: true,
+      pattern: /^[1-9][0-9]{5}$/,
+      custom: (value: string) => {
+        if (value.length !== 6) return 'PIN code must be 6 digits';
+        return null;
+      }
+    }
   });
 
   const loans = [
@@ -91,15 +134,52 @@ const LoansPage: React.FC = () => {
     setApplicationStep(1);
   };
 
+  const handleNextStep = () => {
+    let fieldsToValidate: { [key: string]: string } = {};
+    
+    if (applicationStep === 1) {
+      fieldsToValidate = {
+        amount: applicationData.amount,
+        tenure: applicationData.tenure,
+        income: applicationData.income,
+        employment: applicationData.employment
+      };
+    } else if (applicationStep === 2) {
+      fieldsToValidate = {
+        name: applicationData.name,
+        email: applicationData.email,
+        phone: applicationData.phone,
+        pan: applicationData.pan,
+        address: applicationData.address,
+        city: applicationData.city,
+        pincode: applicationData.pincode
+      };
+    }
+    
+    if (loanValidation.validateForm(fieldsToValidate)) {
+      setApplicationStep(applicationStep + 1);
+    }
+  };
+
+  const handlePreviousStep = () => {
+    setApplicationStep(applicationStep - 1);
+    loanValidation.clearAllErrors();
+  };
+
   const handleApplicationSubmit = () => {
-    // Simulate application submission
-    alert(`Application submitted successfully! Reference ID: ${applicationData.loanType.toUpperCase()}${Date.now()}`);
+    const applicationId = `${applicationData.loanType.replace(/\s+/g, '').toUpperCase()}${Date.now()}`;
+    
+    // Show success message
+    alert(`Application submitted successfully!\n\nReference ID: ${applicationId}\n\nNext Steps:\n• Document verification will begin within 24 hours\n• You will receive an email with required documents list\n• Our team will contact you for further processing`);
+    
+    // Reset form
     setSelectedLoan(null);
     setApplicationStep(0);
     setApplicationData({
-      loanType: '', amount: '', tenure: '', income: '', employment: '',
-      name: '', email: '', phone: '', pan: '', documents: []
+      loanType: '', amount: '', tenure: '', income: '', employment: '', 
+      name: '', email: '', phone: '', pan: '', address: '', city: '', pincode: '', documents: []
     });
+    loanValidation.clearAllErrors();
   };
 
   if (selectedLoan) {
@@ -115,37 +195,11 @@ const LoansPage: React.FC = () => {
           </div>
 
           {/* Progress Steps */}
-          <div className="flex justify-center mb-8">
-            <div className="flex items-center space-x-4">
-              {applicationSteps.map((step, index) => {
-                const Icon = step.icon;
-                const isActive = index + 1 === applicationStep;
-                const isCompleted = index + 1 < applicationStep;
-                
-                return (
-                  <div key={index} className="flex items-center">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      isCompleted ? 'bg-green-500 text-white' :
-                      isActive ? 'bg-primary-600 text-white' :
-                      'bg-gray-200 text-gray-500'
-                    }`}>
-                      {isCompleted ? <CheckCircle className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
-                    </div>
-                    <span className={`ml-2 text-sm font-medium ${
-                      isActive ? 'text-primary-600' : 'text-gray-500'
-                    }`}>
-                      {step.title}
-                    </span>
-                    {index < applicationSteps.length - 1 && (
-                      <div className={`w-8 h-0.5 mx-4 ${
-                        isCompleted ? 'bg-green-500' : 'bg-gray-200'
-                      }`} />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          <ProgressSteps 
+            steps={applicationSteps} 
+            currentStep={applicationStep} 
+            className="mb-8"
+          />
 
           {/* Application Form */}
           <Card>
@@ -153,59 +207,76 @@ const LoansPage: React.FC = () => {
               <div className="space-y-6">
                 <h3 className="text-xl font-bold text-gray-900">Loan Requirements</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Loan Amount (₹)</label>
-                    <input
-                      type="number"
-                      value={applicationData.amount}
-                      onChange={(e) => setApplicationData(prev => ({ ...prev, amount: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      placeholder="Enter loan amount"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Tenure (Years)</label>
-                    <select
-                      value={applicationData.tenure}
-                      onChange={(e) => setApplicationData(prev => ({ ...prev, tenure: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                    >
-                      <option value="">Select tenure</option>
-                      {[...Array(30)].map((_, i) => (
-                        <option key={i} value={i + 1}>{i + 1} Year{i > 0 ? 's' : ''}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Monthly Income (₹)</label>
-                    <input
-                      type="number"
-                      value={applicationData.income}
-                      onChange={(e) => setApplicationData(prev => ({ ...prev, income: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      placeholder="Enter monthly income"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Employment Type</label>
-                    <select
-                      value={applicationData.employment}
-                      onChange={(e) => setApplicationData(prev => ({ ...prev, employment: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                    >
-                      <option value="">Select employment type</option>
-                      <option value="salaried">Salaried</option>
-                      <option value="self-employed">Self Employed</option>
-                      <option value="business">Business Owner</option>
-                      <option value="professional">Professional</option>
-                    </select>
-                  </div>
+                  <FormField
+                    label="Loan Amount"
+                    type="number"
+                    value={applicationData.amount}
+                    onChange={(value) => {
+                      setApplicationData(prev => ({ ...prev, amount: value }));
+                      loanValidation.clearError('amount');
+                    }}
+                    error={loanValidation.errors.amount}
+                    placeholder="Enter loan amount (₹)"
+                    min="100000"
+                    max="100000000"
+                    required
+                  />
+                  
+                  <FormField
+                    label="Tenure"
+                    type="select"
+                    value={applicationData.tenure}
+                    onChange={(value) => {
+                      setApplicationData(prev => ({ ...prev, tenure: value }));
+                      loanValidation.clearError('tenure');
+                    }}
+                    error={loanValidation.errors.tenure}
+                    options={[...Array(30)].map((_, i) => ({
+                      value: (i + 1).toString(),
+                      label: `${i + 1} Year${i > 0 ? 's' : ''}`
+                    }))}
+                    placeholder="Select tenure"
+                    required
+                  />
+                  
+                  <FormField
+                    label="Monthly Income"
+                    type="number"
+                    value={applicationData.income}
+                    onChange={(value) => {
+                      setApplicationData(prev => ({ ...prev, income: value }));
+                      loanValidation.clearError('income');
+                    }}
+                    error={loanValidation.errors.income}
+                    placeholder="Enter monthly income (₹)"
+                    min="15000"
+                    required
+                  />
+                  
+                  <FormField
+                    label="Employment Type"
+                    type="select"
+                    value={applicationData.employment}
+                    onChange={(value) => {
+                      setApplicationData(prev => ({ ...prev, employment: value }));
+                      loanValidation.clearError('employment');
+                    }}
+                    error={loanValidation.errors.employment}
+                    options={[
+                      { value: 'salaried', label: 'Salaried' },
+                      { value: 'self-employed', label: 'Self Employed' },
+                      { value: 'business', label: 'Business Owner' },
+                      { value: 'professional', label: 'Professional' }
+                    ]}
+                    placeholder="Select employment type"
+                    required
+                  />
                 </div>
                 <div className="flex justify-between">
                   <Button variant="outline" onClick={() => setSelectedLoan(null)}>
                     Back to Loans
                   </Button>
-                  <Button onClick={() => setApplicationStep(2)}>
+                  <Button onClick={handleNextStep}>
                     Next: Personal Details
                   </Button>
                 </div>
@@ -216,53 +287,103 @@ const LoansPage: React.FC = () => {
               <div className="space-y-6">
                 <h3 className="text-xl font-bold text-gray-900">Personal Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                    <input
-                      type="text"
-                      value={applicationData.name}
-                      onChange={(e) => setApplicationData(prev => ({ ...prev, name: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      placeholder="Enter full name"
+                  <FormField
+                    label="Full Name"
+                    value={applicationData.name}
+                    onChange={(value) => {
+                      setApplicationData(prev => ({ ...prev, name: value }));
+                      loanValidation.clearError('name');
+                    }}
+                    error={loanValidation.errors.name}
+                    placeholder="Enter full name"
+                    required
+                  />
+                  
+                  <FormField
+                    label="Email Address"
+                    type="email"
+                    value={applicationData.email}
+                    onChange={(value) => {
+                      setApplicationData(prev => ({ ...prev, email: value }));
+                      loanValidation.clearError('email');
+                    }}
+                    error={loanValidation.errors.email}
+                    placeholder="Enter email address"
+                    required
+                  />
+                  
+                  <FormField
+                    label="Phone Number"
+                    type="tel"
+                    value={applicationData.phone}
+                    onChange={(value) => {
+                      setApplicationData(prev => ({ ...prev, phone: value }));
+                      loanValidation.clearError('phone');
+                    }}
+                    error={loanValidation.errors.phone}
+                    placeholder="Enter phone number"
+                    required
+                  />
+                  
+                  <FormField
+                    label="PAN Number"
+                    value={applicationData.pan}
+                    onChange={(value) => {
+                      setApplicationData(prev => ({ ...prev, pan: value.toUpperCase() }));
+                      loanValidation.clearError('pan');
+                    }}
+                    error={loanValidation.errors.pan}
+                    placeholder="Enter PAN number"
+                    maxLength={10}
+                    required
+                  />
+                  
+                  <div className="md:col-span-2">
+                    <FormField
+                      label="Address"
+                      type="textarea"
+                      value={applicationData.address}
+                      onChange={(value) => {
+                        setApplicationData(prev => ({ ...prev, address: value }));
+                        loanValidation.clearError('address');
+                      }}
+                      error={loanValidation.errors.address}
+                      placeholder="Enter complete address"
+                      rows={3}
+                      required
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                    <input
-                      type="email"
-                      value={applicationData.email}
-                      onChange={(e) => setApplicationData(prev => ({ ...prev, email: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      placeholder="Enter email address"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                    <input
-                      type="tel"
-                      value={applicationData.phone}
-                      onChange={(e) => setApplicationData(prev => ({ ...prev, phone: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      placeholder="Enter phone number"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">PAN Number</label>
-                    <input
-                      type="text"
-                      value={applicationData.pan}
-                      onChange={(e) => setApplicationData(prev => ({ ...prev, pan: e.target.value.toUpperCase() }))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      placeholder="Enter PAN number"
-                      maxLength={10}
-                    />
-                  </div>
+                  
+                  <FormField
+                    label="City"
+                    value={applicationData.city}
+                    onChange={(value) => {
+                      setApplicationData(prev => ({ ...prev, city: value }));
+                      loanValidation.clearError('city');
+                    }}
+                    error={loanValidation.errors.city}
+                    placeholder="Enter city"
+                    required
+                  />
+                  
+                  <FormField
+                    label="PIN Code"
+                    value={applicationData.pincode}
+                    onChange={(value) => {
+                      setApplicationData(prev => ({ ...prev, pincode: value }));
+                      loanValidation.clearError('pincode');
+                    }}
+                    error={loanValidation.errors.pincode}
+                    placeholder="Enter PIN code"
+                    maxLength={6}
+                    required
+                  />
                 </div>
                 <div className="flex justify-between">
-                  <Button variant="outline" onClick={() => setApplicationStep(1)}>
+                  <Button variant="outline" onClick={handlePreviousStep}>
                     Previous
                   </Button>
-                  <Button onClick={() => setApplicationStep(3)}>
+                  <Button onClick={handleNextStep}>
                     Next: Documents
                   </Button>
                 </div>
@@ -299,7 +420,7 @@ const LoansPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex justify-between">
-                  <Button variant="outline" onClick={() => setApplicationStep(2)}>
+                  <Button variant="outline" onClick={handlePreviousStep}>
                     Previous
                   </Button>
                   <Button onClick={() => setApplicationStep(4)}>
@@ -323,6 +444,8 @@ const LoansPage: React.FC = () => {
                     <div><span className="font-medium">Email:</span> {applicationData.email}</div>
                     <div><span className="font-medium">Phone:</span> {applicationData.phone}</div>
                     <div><span className="font-medium">PAN:</span> {applicationData.pan}</div>
+                    <div><span className="font-medium">City:</span> {applicationData.city}</div>
+                    <div><span className="font-medium">PIN Code:</span> {applicationData.pincode}</div>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -332,7 +455,7 @@ const LoansPage: React.FC = () => {
                   </label>
                 </div>
                 <div className="flex justify-between">
-                  <Button variant="outline" onClick={() => setApplicationStep(3)}>
+                  <Button variant="outline" onClick={handlePreviousStep}>
                     Previous
                   </Button>
                   <Button onClick={handleApplicationSubmit}>

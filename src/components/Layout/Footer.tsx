@@ -1,7 +1,11 @@
 import React from 'react';
 import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone, MapPin } from 'lucide-react';
 
-const Footer: React.FC = () => {
+interface FooterProps {
+  onSectionChange?: (section: string) => void;
+}
+
+const Footer: React.FC<FooterProps> = ({ onSectionChange }) => {
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
@@ -12,22 +16,28 @@ const Footer: React.FC = () => {
   ];
 
   const quickLinks = [
-    { name: 'About Us', href: '#' },
-    { name: 'Privacy Policy', href: '#' },
-    { name: 'Terms & Conditions', href: '#' },
-    { name: 'Customer Support', href: '#' },
-    { name: 'Careers', href: '#' },
-    { name: 'Blog', href: '#' },
+    { name: 'About Us', section: 'home' },
+    { name: 'Privacy Policy', section: 'privacy' },
+    { name: 'Terms & Conditions', section: 'terms' },
+    { name: 'Customer Support', section: 'contact' },
+    { name: 'Careers', section: 'careers' },
+    { name: 'Blog', section: 'blog' },
   ];
 
   const services = [
-    { name: 'Home Loans', href: '#' },
-    { name: 'Personal Loans', href: '#' },
-    { name: 'Business Loans', href: '#' },
-    { name: 'Life Insurance', href: '#' },
-    { name: 'Health Insurance', href: '#' },
-    { name: 'Mutual Funds', href: '#' },
+    { name: 'Home Loans', section: 'loans' },
+    { name: 'Personal Loans', section: 'loans' },
+    { name: 'Business Loans', section: 'loans' },
+    { name: 'Life Insurance', section: 'insurance' },
+    { name: 'Health Insurance', section: 'insurance' },
+    { name: 'Mutual Funds', section: 'mutual-funds' },
   ];
+
+  const handleLinkClick = (section: string) => {
+    if (onSectionChange) {
+      onSectionChange(section);
+    }
+  };
 
   return (
     <footer className="bg-gray-900 text-white">
@@ -67,12 +77,12 @@ const Footer: React.FC = () => {
             <ul className="space-y-2">
               {services.map((service, index) => (
                 <li key={index}>
-                  <a
-                    href={service.href}
+                  <button
+                    onClick={() => handleLinkClick(service.section)}
                     className="text-gray-300 hover:text-white transition-colors duration-200 text-sm"
                   >
                     {service.name}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -84,12 +94,12 @@ const Footer: React.FC = () => {
             <ul className="space-y-2">
               {quickLinks.map((link, index) => (
                 <li key={index}>
-                  <a
-                    href={link.href}
+                  <button
+                    onClick={() => handleLinkClick(link.section)}
                     className="text-gray-300 hover:text-white transition-colors duration-200 text-sm"
                   >
                     {link.name}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -140,15 +150,15 @@ const Footer: React.FC = () => {
               © {currentYear} FinBridge - SR Associates. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
+              <button onClick={() => handleLinkClick('privacy')} className="text-gray-300 hover:text-white text-sm transition-colors">
                 Privacy Policy
-              </a>
-              <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
+              </button>
+              <button onClick={() => handleLinkClick('terms')} className="text-gray-300 hover:text-white text-sm transition-colors">
                 Terms of Service
-              </a>
-              <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
+              </button>
+              <button onClick={() => handleLinkClick('cookies')} className="text-gray-300 hover:text-white text-sm transition-colors">
                 Cookie Policy
-              </a>
+              </button>
             </div>
           </div>
         </div>
