@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle, LucideIcon } from 'lucide-react';
+import { CheckCircle, DivideIcon as LucideIcon } from 'lucide-react';
 
 interface Step {
   title: string;
