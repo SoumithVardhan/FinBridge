@@ -8,12 +8,14 @@ import { useAuth } from '../hooks/useAuth';
 import { useFormValidation, commonValidationRules } from '../hooks/useFormValidation';
 
 const CustomerPortalPage: React.FC = () => {
-  const { user, isLoading, error, login, register, logout, forgotPassword, isAuthenticated } = useAuth();
+  const { user, isLoading, error, login, register, logout, forgotPassword, resetPassword, isAuthenticated } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [resetToken, setResetToken] = useState('');
   
   const [loginForm, setLoginForm] = useState({
     email: '',
@@ -29,6 +31,10 @@ const CustomerPortalPage: React.FC = () => {
   });
   
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+  const [resetPasswordForm, setResetPasswordForm] = useState({
+    newPassword: '',
+    confirmPassword: ''
+  });
 
   // Form validation
   const loginValidation = useFormValidation({
@@ -50,6 +56,16 @@ const CustomerPortalPage: React.FC = () => {
     }
   });
 
+  const resetPasswordValidation = useFormValidation({
+    newPassword: commonValidationRules.password,
+    confirmPassword: {
+      required: true,
+      custom: (value: string) => {
+        if (value !== resetPasswordForm.newPassword) return 'Passwords do not match';
+        return null;
+      }
+    }
+  });
   const portalFeatures = [
     {
       icon: FileText,
@@ -106,9 +122,30 @@ const CustomerPortalPage: React.FC = () => {
     const success = await forgotPassword(forgotPasswordEmail);
     if (success) {
       setResetEmailSent(true);
+      setResetToken(Date.now().toString()); // Simulate reset token
+      // In real app, this would come from email link
+      setTimeout(() => {
+        setShowResetPassword(true);
+        setShowForgotPassword(false);
+      }, 2000);
     }
   };
 
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (resetPasswordValidation.validateForm(resetPasswordForm)) {
+      const success = await resetPassword(forgotPasswordEmail, resetPasswordForm.newPassword);
+      if (success) {
+        alert('Password reset successfully! You can now login with your new password.');
+        setShowResetPassword(false);
+        setResetEmailSent(false);
+        setForgotPasswordEmail('');
+        setResetPasswordForm({ newPassword: '', confirmPassword: '' });
+        resetPasswordValidation.clearAllErrors();
+      }
+    }
+  };
   const handleLogout = () => {
     logout();
     setLoginForm({ email: '', password: '' });
@@ -133,6 +170,106 @@ const CustomerPortalPage: React.FC = () => {
     { label: 'Gold ETF', value: 10, color: '#f59e0b' }
   ];
 
+  if (showResetPassword) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-16 animate-fade-in">
+        <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <Card>
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 mx-auto mb-4 bg-primary-100 rounded-2xl flex items-center justify-center">
+                <Lock className="w-8 h-8 text-primary-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Reset Password</h3>
+              <p className="text-gray-600">Enter your new password</p>
+            </div>
+
+            <form onSubmit={handleResetPassword} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  New Password <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={resetPasswordForm.newPassword}
+                    onChange={(e) => {
+                      setResetPasswordForm({...resetPasswordForm, newPassword: e.target.value});
+                      resetPasswordValidation.clearError('newPassword');
+                    }}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors pr-12 ${
+                      resetPasswordValidation.errors.newPassword ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                    placeholder="Enter new password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+                {resetPasswordValidation.errors.newPassword && (
+                  <div className="flex items-center text-red-600 text-sm mt-2">
+                    <AlertCircle className="w-4 h-4 mr-1" />
+                    {resetPasswordValidation.errors.newPassword}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Confirm New Password <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={resetPasswordForm.confirmPassword}
+                    onChange={(e) => {
+                      setResetPasswordForm({...resetPasswordForm, confirmPassword: e.target.value});
+                      resetPasswordValidation.clearError('confirmPassword');
+                    }}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors pr-12 ${
+                      resetPasswordValidation.errors.confirmPassword ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                    placeholder="Confirm new password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+                {resetPasswordValidation.errors.confirmPassword && (
+                  <div className="flex items-center text-red-600 text-sm mt-2">
+                    <AlertCircle className="w-4 h-4 mr-1" />
+                    {resetPasswordValidation.errors.confirmPassword}
+                  </div>
+                )}
+              </div>
+
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="flex items-center text-red-600 text-sm">
+                    <AlertCircle className="w-4 h-4 mr-2" />
+                    {error}
+                  </div>
+                </div>
+              )}
+
+              <Button type="submit" className="w-full" size="lg" loading={isLoading}>
+                Reset Password
+              </Button>
+            </form>
+          </Card>
+        </div>
+      </div>
+    );
+  }
   if (!isAuthenticated) {
     if (showForgotPassword) {
       return (
@@ -219,6 +356,9 @@ const CustomerPortalPage: React.FC = () => {
                 </h3>
                 <p className="text-gray-600">
                   {isRegistering ? 'Join FinBridge for comprehensive financial services' : 'Access your financial dashboard securely'}
+                </p>
+                <p className="text-sm text-gray-500 mb-4">
+                  Redirecting to password reset form...
                 </p>
               </div>
 
@@ -484,6 +624,7 @@ const CustomerPortalPage: React.FC = () => {
             icon={LogOut}
           >
             Logout
+                  setShowResetPassword(false);
           </Button>
         </div>
 
