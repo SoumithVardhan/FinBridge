@@ -1,71 +1,116 @@
 import React, { useState } from 'react';
-import { User, Lock, Eye, EyeOff, FileText, CreditCard, TrendingUp, HeadphonesIcon, LogOut, CheckCircle, Clock, AlertCircle, UserPlus, Mail } from 'lucide-react';
+import { User, Lock, FileText, CreditCard, TrendingUp, HeadphonesIcon, LogOut, CheckCircle, Clock, AlertCircle, UserPlus, Mail } from 'lucide-react';
 import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import FormField from '../components/UI/FormField';
+import PasswordInput from '../components/UI/PasswordInput';
+import ErrorMessage from '../components/UI/ErrorMessage';
+import FormCard from '../components/UI/FormCard';
 import SimpleChart from '../components/Charts/SimpleChart';
 import { useAuth } from '../hooks/useAuth';
-import { useFormValidation, commonValidationRules } from '../hooks/useFormValidation';
+import { useFormManager } from '../hooks/useFormManager';
+import { commonValidationRules } from '../hooks/useFormValidation';
+import { RegisterData, LoginCredentials } from '../types';
 
 const CustomerPortalPage: React.FC = () => {
   const { user, isLoading, error, login, register, logout, forgotPassword, resetPassword, isAuthenticated } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
-  const [resetToken, setResetToken] = useState('');
-  
-  const [loginForm, setLoginForm] = useState({
-    email: '',
-    password: ''
-  });
-  
-  const [registerForm, setRegisterForm] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: ''
-  });
-  
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
-  const [resetPasswordForm, setResetPasswordForm] = useState({
-    newPassword: '',
-    confirmPassword: ''
+
+  // Login form management
+  const loginForm = useFormManager({
+    initialValues: { email: '', password: '' } as LoginCredentials,
+    validationRules: {
+      email: commonValidationRules.email,
+      password: { required: true }
+    },
+    onSubmit: login
   });
 
-  // Form validation
-  const loginValidation = useFormValidation({
-    email: commonValidationRules.email,
-    password: { required: true }
-  });
-
-  const registerValidation = useFormValidation({
-    name: commonValidationRules.name,
-    email: commonValidationRules.email,
-    phone: commonValidationRules.phone,
-    password: commonValidationRules.password,
-    confirmPassword: {
-      required: true,
-      custom: (value: string) => {
-        if (value !== registerForm.password) return 'Passwords do not match';
-        return null;
+  // Registration form management
+  const registerForm = useFormManager({
+    initialValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      password: '',
+      confirmPassword: ''
+    } as RegisterData,
+    validationRules: {
+      firstName: commonValidationRules.name,
+      lastName: commonValidationRules.name,
+      email: commonValidationRules.email,
+      phone: commonValidationRules.phone,
+      password: commonValidationRules.password,
+      confirmPassword: {
+        required: true,
+        custom: (value: string) => {
+          if (value !== registerForm.formData.password) return 'Passwords do not match';
+          return null;
+        }
       }
+    },
+    onSubmit: register,
+    onSuccess: () => setIsRegistering(false)
+  });
+
+  // Reset password form management
+  const resetPasswordForm = useFormManager({
+    initialValues: { newPassword: '', confirmPassword: '' },
+    validationRules: {
+      newPassword: commonValidationRules.password,
+      confirmPassword: {
+        required: true,
+        custom: (value: string) => {
+          if (value !== resetPasswordForm.formData.newPassword) return 'Passwords do not match';
+          return null;
+        }
+      }
+    },
+    onSubmit: async (data) => {
+      const success = await resetPassword(forgotPasswordEmail, data.newPassword);
+      if (success) {
+        alert('Password reset successfully! You can now login with your new password.');
+        setShowResetPassword(false);
+        setResetEmailSent(false);
+        setForgotPasswordEmail('');
+      }
+      return success;
     }
   });
 
-  const resetPasswordValidation = useFormValidation({
-    newPassword: commonValidationRules.password,
-    confirmPassword: {
-      required: true,
-      custom: (value: string) => {
-        if (value !== resetPasswordForm.newPassword) return 'Passwords do not match';
-        return null;
-      }
+  // Handlers
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!forgotPasswordEmail.trim()) return;
+    
+    const success = await forgotPassword(forgotPasswordEmail);
+    if (success) {
+      setResetEmailSent(true);
+      setTimeout(() => {
+        setShowResetPassword(true);
+        setShowForgotPassword(false);
+      }, 2000);
     }
-  });
+  };
+
+  const handleLogout = () => {
+    logout();
+    loginForm.resetForm();
+    registerForm.resetForm();
+  };
+
+  const toggleAuthMode = () => {
+    setIsRegistering(!isRegistering);
+    loginForm.resetForm();
+    registerForm.resetForm();
+  };
+
+  // Constants
   const portalFeatures = [
     {
       icon: FileText,
@@ -89,72 +134,6 @@ const CustomerPortalPage: React.FC = () => {
     }
   ];
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (loginValidation.validateForm(loginForm)) {
-      const success = await login(loginForm);
-      if (success) {
-        setLoginForm({ email: '', password: '' });
-        loginValidation.clearAllErrors();
-      }
-    }
-  };
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (registerValidation.validateForm(registerForm)) {
-      const success = await register(registerForm);
-      if (success) {
-        setRegisterForm({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
-        registerValidation.clearAllErrors();
-        setIsRegistering(false);
-      }
-    }
-  };
-
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!forgotPasswordEmail.trim()) return;
-    
-    const success = await forgotPassword(forgotPasswordEmail);
-    if (success) {
-      setResetEmailSent(true);
-      setResetToken(Date.now().toString()); // Simulate reset token
-      // In real app, this would come from email link
-      setTimeout(() => {
-        setShowResetPassword(true);
-        setShowForgotPassword(false);
-      }, 2000);
-    }
-  };
-
-  const handleResetPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (resetPasswordValidation.validateForm(resetPasswordForm)) {
-      const success = await resetPassword(forgotPasswordEmail, resetPasswordForm.newPassword);
-      if (success) {
-        alert('Password reset successfully! You can now login with your new password.');
-        setShowResetPassword(false);
-        setResetEmailSent(false);
-        setForgotPasswordEmail('');
-        setResetPasswordForm({ newPassword: '', confirmPassword: '' });
-        resetPasswordValidation.clearAllErrors();
-      }
-    }
-  };
-  const handleLogout = () => {
-    logout();
-    setLoginForm({ email: '', password: '' });
-    setRegisterForm({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
-    loginValidation.clearAllErrors();
-    registerValidation.clearAllErrors();
-  };
-
-  // Mock portfolio data for charts
   const portfolioData = [
     { label: 'Jan', value: 50000 },
     { label: 'Feb', value: 65000 },
@@ -170,172 +149,111 @@ const CustomerPortalPage: React.FC = () => {
     { label: 'Gold ETF', value: 10, color: '#f59e0b' }
   ];
 
+  // Reset Password Form
   if (showResetPassword) {
     return (
       <div className="min-h-screen bg-gray-50 pt-16 animate-fade-in">
         <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <Card>
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 mx-auto mb-4 bg-primary-100 rounded-2xl flex items-center justify-center">
-                <Lock className="w-8 h-8 text-primary-600" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Reset Password</h3>
-              <p className="text-gray-600">Enter your new password</p>
-            </div>
+          <FormCard
+            icon={Lock}
+            title="Reset Password"
+            description="Enter your new password"
+          >
+            <form onSubmit={resetPasswordForm.handleSubmit} className="space-y-6">
+              <PasswordInput
+                label="New Password"
+                value={resetPasswordForm.formData.newPassword}
+                onChange={(value) => resetPasswordForm.updateField('newPassword', value)}
+                placeholder="Enter new password"
+                error={resetPasswordForm.errors.newPassword}
+                required
+                autoComplete="new-password"
+              />
 
-            <form onSubmit={handleResetPassword} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  New Password <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={resetPasswordForm.newPassword}
-                    onChange={(e) => {
-                      setResetPasswordForm({...resetPasswordForm, newPassword: e.target.value});
-                      resetPasswordValidation.clearError('newPassword');
-                    }}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors pr-12 ${
-                      resetPasswordValidation.errors.newPassword ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                    }`}
-                    placeholder="Enter new password"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-                {resetPasswordValidation.errors.newPassword && (
-                  <div className="flex items-center text-red-600 text-sm mt-2">
-                    <AlertCircle className="w-4 h-4 mr-1" />
-                    {resetPasswordValidation.errors.newPassword}
-                  </div>
-                )}
-              </div>
+              <PasswordInput
+                label="Confirm New Password"
+                value={resetPasswordForm.formData.confirmPassword}
+                onChange={(value) => resetPasswordForm.updateField('confirmPassword', value)}
+                placeholder="Confirm new password"
+                error={resetPasswordForm.errors.confirmPassword}
+                required
+                autoComplete="new-password"
+              />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirm New Password <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    value={resetPasswordForm.confirmPassword}
-                    onChange={(e) => {
-                      setResetPasswordForm({...resetPasswordForm, confirmPassword: e.target.value});
-                      resetPasswordValidation.clearError('confirmPassword');
-                    }}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors pr-12 ${
-                      resetPasswordValidation.errors.confirmPassword ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                    }`}
-                    placeholder="Confirm new password"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  >
-                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-                {resetPasswordValidation.errors.confirmPassword && (
-                  <div className="flex items-center text-red-600 text-sm mt-2">
-                    <AlertCircle className="w-4 h-4 mr-1" />
-                    {resetPasswordValidation.errors.confirmPassword}
-                  </div>
-                )}
-              </div>
+              <ErrorMessage message={error ?? undefined} className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center text-red-600 text-sm" />
 
-              {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <div className="flex items-center text-red-600 text-sm">
-                    <AlertCircle className="w-4 h-4 mr-2" />
-                    {error}
-                  </div>
-                </div>
-              )}
-
-              <Button type="submit" className="w-full" size="lg" loading={isLoading}>
+              <Button 
+                type="submit" 
+                className="w-full" 
+                size="lg" 
+                loading={resetPasswordForm.isSubmitting || isLoading}
+              >
                 Reset Password
               </Button>
             </form>
-          </Card>
+          </FormCard>
         </div>
       </div>
     );
   }
-  if (!isAuthenticated) {
-    if (showForgotPassword) {
-      return (
-        <div className="min-h-screen bg-gray-50 pt-16 animate-fade-in">
-          <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <Card>
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 mx-auto mb-4 bg-primary-100 rounded-2xl flex items-center justify-center">
-                  <Mail className="w-8 h-8 text-primary-600" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Reset Password</h3>
-                <p className="text-gray-600">Enter your email to receive reset instructions</p>
+
+  // Forgot Password Form
+  if (!isAuthenticated && showForgotPassword) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-16 animate-fade-in">
+        <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <FormCard
+            icon={Mail}
+            title="Reset Password"
+            description="Enter your email to receive reset instructions"
+          >
+            {!resetEmailSent ? (
+              <form onSubmit={handleForgotPassword} className="space-y-6">
+                <FormField
+                  label="Email Address"
+                  type="email"
+                  value={forgotPasswordEmail}
+                  onChange={setForgotPasswordEmail}
+                  placeholder="Enter your email"
+                  required
+                />
+
+                <ErrorMessage message={error ?? undefined} className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center text-red-600 text-sm" />
+
+                <Button type="submit" className="w-full" size="lg" loading={isLoading}>
+                  Send Reset Instructions
+                </Button>
+              </form>
+            ) : (
+              <div className="text-center">
+                <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">Email Sent!</h4>
+                <p className="text-gray-600 mb-6">
+                  We've sent password reset instructions to {forgotPasswordEmail}
+                </p>
               </div>
+            )}
 
-              {!resetEmailSent ? (
-                <form onSubmit={handleForgotPassword} className="space-y-6">
-                  <FormField
-                    label="Email Address"
-                    type="email"
-                    value={forgotPasswordEmail}
-                    onChange={setForgotPasswordEmail}
-                    placeholder="Enter your email"
-                    required
-                  />
-
-                  {error && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                      <div className="flex items-center text-red-600 text-sm">
-                        <AlertCircle className="w-4 h-4 mr-2" />
-                        {error}
-                      </div>
-                    </div>
-                  )}
-
-                  <Button type="submit" className="w-full" size="lg" loading={isLoading}>
-                    Send Reset Instructions
-                  </Button>
-                </form>
-              ) : (
-                <div className="text-center">
-                  <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">Email Sent!</h4>
-                  <p className="text-gray-600 mb-6">
-                    We've sent password reset instructions to {forgotPasswordEmail}
-                  </p>
-                </div>
-              )}
-
-              <div className="text-center mt-6">
-                <button
-                  onClick={() => {
-                    setShowForgotPassword(false);
-                    setResetEmailSent(false);
-                    setForgotPasswordEmail('');
-                  }}
-                  className="text-primary-600 hover:text-primary-800 text-sm"
-                >
-                  Back to Login
-                </button>
-              </div>
-            </Card>
-          </div>
+            <div className="text-center mt-6">
+              <button
+                onClick={() => {
+                  setShowForgotPassword(false);
+                  setResetEmailSent(false);
+                  setForgotPasswordEmail('');
+                }}
+                className="text-primary-600 hover:text-primary-800 text-sm"
+              >
+                Back to Login
+              </button>
+            </div>
+          </FormCard>
         </div>
-      );
-    }
+      </div>
+    );
+  }
 
+  // Login/Register Forms
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50 pt-16 animate-fade-in">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -346,108 +264,68 @@ const CustomerPortalPage: React.FC = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Login/Register Form */}
-            <Card className="max-w-md mx-auto w-full">
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 mx-auto mb-4 bg-primary-100 rounded-2xl flex items-center justify-center">
-                  {isRegistering ? <UserPlus className="w-8 h-8 text-primary-600" /> : <User className="w-8 h-8 text-primary-600" />}
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  {isRegistering ? 'Create Your Account' : 'Login to Your Account'}
-                </h3>
-                <p className="text-gray-600">
-                  {isRegistering ? 'Join FinBridge for comprehensive financial services' : 'Access your financial dashboard securely'}
-                </p>
-                <p className="text-sm text-gray-500 mb-4">
-                  Redirecting to password reset form...
-                </p>
-              </div>
-
+            <FormCard
+              icon={isRegistering ? UserPlus : User}
+              title={isRegistering ? 'Create Your Account' : 'Login to Your Account'}
+              description={isRegistering ? 'Join FinBridge for comprehensive financial services' : 'Access your financial dashboard securely'}
+            >
               {!isRegistering ? (
-                <form onSubmit={handleLogin} className="space-y-6">
+                // Login Form
+                <form onSubmit={loginForm.handleSubmit} className="space-y-6">
                   <FormField
                     label="Email Address"
                     type="email"
-                    value={loginForm.email}
-                    onChange={(value) => {
-                      setLoginForm({...loginForm, email: value});
-                      loginValidation.clearError('email');
-                    }}
-                    error={loginValidation.errors.email}
+                    value={loginForm.formData.email}
+                    onChange={(value) => loginForm.updateField('email', value)}
+                    error={loginForm.errors.email}
                     placeholder="Enter your email"
                     required
                   />
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Password <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        value={loginForm.password}
-                        onChange={(e) => {
-                          setLoginForm({...loginForm, password: e.target.value});
-                          loginValidation.clearError('password');
-                        }}
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors pr-12 ${
-                          loginValidation.errors.password ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                        }`}
-                        placeholder="Enter your password"
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                      >
-                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                      </button>
-                    </div>
-                    {loginValidation.errors.password && (
-                      <div className="flex items-center text-red-600 text-sm mt-2">
-                        <AlertCircle className="w-4 h-4 mr-1" />
-                        {loginValidation.errors.password}
-                      </div>
-                    )}
-                  </div>
+                  <PasswordInput
+                    label="Password"
+                    value={loginForm.formData.password}
+                    onChange={(value) => loginForm.updateField('password', value)}
+                    placeholder="Enter your password"
+                    error={loginForm.errors.password}
+                    required
+                  />
 
-                  {error && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                      <div className="flex items-center text-red-600 text-sm">
-                        <AlertCircle className="w-4 h-4 mr-2" />
-                        {error}
-                      </div>
-                    </div>
-                  )}
+                  <ErrorMessage message={error ?? undefined} className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center text-red-600 text-sm" />
 
-                  <Button type="submit" className="w-full" size="lg" loading={isLoading}>
+                  <Button type="submit" className="w-full" size="lg" loading={loginForm.isSubmitting || isLoading}>
                     <Lock className="w-5 h-5 mr-2" />
                     Login Securely
                   </Button>
                 </form>
               ) : (
-                <form onSubmit={handleRegister} className="space-y-6">
-                  <FormField
-                    label="Full Name"
-                    value={registerForm.name}
-                    onChange={(value) => {
-                      setRegisterForm({...registerForm, name: value});
-                      registerValidation.clearError('name');
-                    }}
-                    error={registerValidation.errors.name}
-                    placeholder="Enter your full name"
-                    required
-                  />
+                // Registration Form
+                <form onSubmit={registerForm.handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      label="First Name"
+                      value={registerForm.formData.firstName}
+                      onChange={(value) => registerForm.updateField('firstName', value)}
+                      error={registerForm.errors.firstName}
+                      placeholder="First name"
+                      required
+                    />
+                    <FormField
+                      label="Last Name"
+                      value={registerForm.formData.lastName}
+                      onChange={(value) => registerForm.updateField('lastName', value)}
+                      error={registerForm.errors.lastName}
+                      placeholder="Last name"
+                      required
+                    />
+                  </div>
 
                   <FormField
                     label="Email Address"
                     type="email"
-                    value={registerForm.email}
-                    onChange={(value) => {
-                      setRegisterForm({...registerForm, email: value});
-                      registerValidation.clearError('email');
-                    }}
-                    error={registerValidation.errors.email}
+                    value={registerForm.formData.email}
+                    onChange={(value) => registerForm.updateField('email', value)}
+                    error={registerForm.errors.email}
                     placeholder="Enter your email"
                     required
                   />
@@ -455,94 +333,36 @@ const CustomerPortalPage: React.FC = () => {
                   <FormField
                     label="Phone Number"
                     type="tel"
-                    value={registerForm.phone}
-                    onChange={(value) => {
-                      setRegisterForm({...registerForm, phone: value});
-                      registerValidation.clearError('phone');
-                    }}
-                    error={registerValidation.errors.phone}
+                    value={registerForm.formData.phone}
+                    onChange={(value) => registerForm.updateField('phone', value)}
+                    error={registerForm.errors.phone}
                     placeholder="Enter your phone number"
                     required
                   />
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Password <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        value={registerForm.password}
-                        onChange={(e) => {
-                          setRegisterForm({...registerForm, password: e.target.value});
-                          registerValidation.clearError('password');
-                        }}
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors pr-12 ${
-                          registerValidation.errors.password ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                        }`}
-                        placeholder="Create a strong password"
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                      >
-                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                      </button>
-                    </div>
-                    {registerValidation.errors.password && (
-                      <div className="flex items-center text-red-600 text-sm mt-2">
-                        <AlertCircle className="w-4 h-4 mr-1" />
-                        {registerValidation.errors.password}
-                      </div>
-                    )}
-                  </div>
+                  <PasswordInput
+                    label="Password"
+                    value={registerForm.formData.password}
+                    onChange={(value) => registerForm.updateField('password', value)}
+                    placeholder="Create a strong password"
+                    error={registerForm.errors.password}
+                    required
+                    autoComplete="new-password"
+                  />
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Confirm Password <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        value={registerForm.confirmPassword}
-                        onChange={(e) => {
-                          setRegisterForm({...registerForm, confirmPassword: e.target.value});
-                          registerValidation.clearError('confirmPassword');
-                        }}
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors pr-12 ${
-                          registerValidation.errors.confirmPassword ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-                        }`}
-                        placeholder="Confirm your password"
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                      >
-                        {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                      </button>
-                    </div>
-                    {registerValidation.errors.confirmPassword && (
-                      <div className="flex items-center text-red-600 text-sm mt-2">
-                        <AlertCircle className="w-4 h-4 mr-1" />
-                        {registerValidation.errors.confirmPassword}
-                      </div>
-                    )}
-                  </div>
+                  <PasswordInput
+                    label="Confirm Password"
+                    value={registerForm.formData.confirmPassword}
+                    onChange={(value) => registerForm.updateField('confirmPassword', value)}
+                    placeholder="Confirm your password"
+                    error={registerForm.errors.confirmPassword}
+                    required
+                    autoComplete="new-password"
+                  />
 
-                  {error && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                      <div className="flex items-center text-red-600 text-sm">
-                        <AlertCircle className="w-4 h-4 mr-2" />
-                        {error}
-                      </div>
-                    </div>
-                  )}
+                  <ErrorMessage message={error ?? undefined} className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center text-red-600 text-sm" />
 
-                  <Button type="submit" className="w-full" size="lg" loading={isLoading}>
+                  <Button type="submit" className="w-full" size="lg" loading={registerForm.isSubmitting || isLoading}>
                     <UserPlus className="w-5 h-5 mr-2" />
                     Create Account
                   </Button>
@@ -558,21 +378,12 @@ const CustomerPortalPage: React.FC = () => {
                 </button>
                 <div className="text-sm text-gray-500">
                   {!isRegistering ? "Don't have an account? " : "Already have an account? "}
-                  <button
-                    onClick={() => {
-                      setIsRegistering(!isRegistering);
-                      loginValidation.clearAllErrors();
-                      registerValidation.clearAllErrors();
-                      setLoginForm({ email: '', password: '' });
-                      setRegisterForm({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
-                    }}
-                    className="text-primary-600 hover:text-primary-800"
-                  >
+                  <button onClick={toggleAuthMode} className="text-primary-600 hover:text-primary-800">
                     {!isRegistering ? 'Register here' : 'Login here'}
                   </button>
                 </div>
               </div>
-            </Card>
+            </FormCard>
 
             {/* Portal Features */}
             <div>
@@ -609,7 +420,7 @@ const CustomerPortalPage: React.FC = () => {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user?.name}!</h1>
             <p className="text-gray-600">Here's your financial overview</p>
-            {user?.kycStatus === 'pending' && (
+            {user?.kycStatus === 'PENDING' && (
               <div className="mt-2 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
                 <div className="flex items-center text-yellow-800 text-sm">
                   <Clock className="w-4 h-4 mr-2" />
@@ -618,11 +429,7 @@ const CustomerPortalPage: React.FC = () => {
               </div>
             )}
           </div>
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            icon={LogOut}
-          >
+          <Button onClick={handleLogout} variant="outline" icon={LogOut}>
             Logout
           </Button>
         </div>
@@ -751,7 +558,7 @@ const CustomerPortalPage: React.FC = () => {
                 <span className="font-semibold text-lg text-green-600">+₹{user?.portfolio?.totalGains.toLocaleString() || '0'} ({user?.portfolio?.totalGains ? ((user.portfolio.totalGains / user.portfolio.totalInvestment) * 100).toFixed(1) : '0'}%)</span>
               </div>
               
-              {user?.kycStatus === 'verified' && (
+              {user?.kycStatus === 'VERIFIED' && (
                 <div className="pt-4 border-t border-gray-200">
                   <h4 className="font-semibold text-gray-900 mb-3">Asset Allocation</h4>
                   <div className="space-y-2">

@@ -28,12 +28,54 @@ export interface MutualFund {
   description: string;
 }
 
+// Updated User interface to match backend schema
 export interface User {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  name?: string | undefined; // Computed property for backward compatibility
   email: string;
   phone: string;
-  isAuthenticated: boolean;
+  role: string;
+  kycStatus: 'PENDING' | 'UNDER_REVIEW' | 'VERIFIED' | 'REJECTED' | 'INCOMPLETE';
+  emailVerified: boolean;
+  phoneVerified: boolean;
+  dateOfBirth?: string | undefined;
+  gender?: string | undefined;
+  addressLine1?: string | undefined;
+  addressLine2?: string | undefined;
+  city?: string | undefined;
+  state?: string | undefined;
+  pincode?: string | undefined;
+  country?: string | undefined;
+  createdAt: string;
+  lastLoginAt?: string | undefined;
+  isAuthenticated?: boolean | undefined; // For frontend compatibility
+  portfolio?: {
+    totalInvestment: number;
+    currentValue: number;
+    totalGains: number;
+    activeLoans: number;
+    insurancePolicies: number;
+  } | undefined;
+}
+
+// Login credentials interface
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+// Registration data interface
+export interface RegisterData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+  dateOfBirth?: string | undefined;
+  gender?: string | undefined;
 }
 
 export interface ContactForm {
@@ -61,3 +103,18 @@ export interface SIPCalculation {
   totalInvestment: number;
   totalGains: number;
 }
+
+// API Response interface
+export interface ApiResponse<T = any> {
+  success: boolean;
+  message: string;
+  data?: T;
+  errors?: string[];
+  code?: string;
+}
+
+// KYC Status type
+export type KYCStatus = 'PENDING' | 'UNDER_REVIEW' | 'VERIFIED' | 'REJECTED' | 'INCOMPLETE';
+
+// User Role type
+export type UserRole = 'USER' | 'ADMIN' | 'KYC_OFFICER' | 'LOAN_OFFICER' | 'SUPPORT';

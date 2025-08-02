@@ -46,12 +46,17 @@ export const useFormValidation = (rules: ValidationRules) => {
     return null;
   }, [rules]);
 
-  const validateForm = useCallback((formData: { [key: string]: string }): boolean => {
+  // More flexible validateForm that accepts any object type
+  const validateForm = useCallback(<T extends Record<string, any>>(formData: T): boolean => {
     const newErrors: FormErrors = {};
     let isValid = true;
 
     Object.keys(rules).forEach(fieldName => {
-      const error = validateField(fieldName, formData[fieldName] || '');
+      const fieldValue = formData[fieldName];
+      // Convert to string, handling undefined/null values
+      const stringValue = fieldValue != null ? String(fieldValue) : '';
+      
+      const error = validateField(fieldName, stringValue);
       if (error) {
         newErrors[fieldName] = error;
         isValid = false;

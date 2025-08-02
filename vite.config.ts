@@ -11,8 +11,9 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000,
-    open: true
+    host: '0.0.0.0',
+    port: 5173,
+    open: false
   },
   build: {
     outDir: 'dist',
@@ -28,7 +29,8 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000
   },
   preview: {
+    host: '0.0.0.0',
     port: 4173,
-    open: true
+    open: false
   }
 })

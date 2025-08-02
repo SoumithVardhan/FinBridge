@@ -1,0 +1,391 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  KYC_OFFICER
+  LOAN_OFFICER
+  SUPPORT
+}
+
+enum KYCStatus {
+  PENDING
+  UNDER_REVIEW
+  VERIFIED
+  REJECTED
+  INCOMPLETE
+}
+
+enum LoanStatus {
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  DISBURSED
+  ACTIVE
+  CLOSED
+  REJECTED
+  DEFAULTED
+}
+
+enum LoanType {
+  HOME
+  PERSONAL
+  BUSINESS
+  EDUCATION
+  VEHICLE
+  MORTGAGE
+}
+
+enum InvestmentType {
+  SIP
+  LUMP_SUM
+  EQUITY
+  DEBT
+  HYBRID
+  ELSS
+}
+
+enum InvestmentStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum InsuranceType {
+  LIFE
+  HEALTH
+  MOTOR
+  HOME
+  TRAVEL
+}
+
+enum PolicyStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  LAPSED
+  CLAIM_PENDING
+}
+
+enum TransactionType {
+  LOAN_EMI
+  INSURANCE_PREMIUM
+  INVESTMENT_SIP
+  INVESTMENT_LUMP_SUM
+  LOAN_DISBURSEMENT
+  INSURANCE_CLAIM
+  REFUND
+}
+
+enum TransactionStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+enum DocumentType {
+  AADHAR_CARD
+  PAN_CARD
+  BANK_STATEMENT
+  INCOME_PROOF
+  ADDRESS_PROOF
+  PASSPORT
+  DRIVING_LICENSE
+  UTILITY_BILL
+  SALARY_SLIP
+  ITR
+}
+
+model User {
+  id                String        @id @default(cuid())
+  email             String        @unique
+  emailVerified     Boolean       @default(false)
+  emailVerifiedAt   DateTime?
+  passwordHash      String
+  role              UserRole      @default(USER)
+  
+  // Personal Information
+  firstName         String
+  lastName          String
+  phone             String        @unique
+  phoneVerified     Boolean       @default(false)
+  dateOfBirth       DateTime?
+  gender            String?
+  
+  // Address
+  addressLine1      String?
+  addressLine2      String?
+  city              String?
+  state             String?
+  pincode           String?
+  country           String        @default("India")
+  
+  // KYC Information
+  kycStatus         KYCStatus     @default(PENDING)
+  kycCompletedAt    DateTime?
+  panNumber         String?       @unique
+  aadharNumber      String?       @unique
+  
+  // Account Status
+  isActive          Boolean       @default(true)
+  isBlocked         Boolean       @default(false)
+  blockedReason     String?
+  blockedAt         DateTime?
+  
+  // Timestamps
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  lastLoginAt       DateTime?
+  
+  // Relations
+  refreshTokens     RefreshToken[]
+  otps              OTP[]
+  documents         Document[]
+  loans             Loan[]
+  investments       Investment[]
+  insurancePolicies InsurancePolicy[]
+  transactions      Transaction[]
+  notifications     Notification[]
+  auditLogs         AuditLog[]
+  
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  expiresAt DateTime
+  userId    String
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("refresh_tokens")
+}
+
+model OTP {
+  id        String   @id @default(cuid())
+  userId    String
+  code      String
+  type      String   // EMAIL_VERIFICATION, PHONE_VERIFICATION, PASSWORD_RESET, LOGIN_MFA
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("otps")
+}
+
+model Document {
+  id           String       @id @default(cuid())
+  userId       String
+  type         DocumentType
+  fileName     String
+  fileUrl      String
+  fileSize     Int
+  mimeType     String
+  status       String       @default("pending") // pending, verified, rejected
+  verifiedAt   DateTime?
+  verifiedBy   String?
+  rejectedReason String?
+  uploadedAt   DateTime     @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("documents")
+}
+
+model Loan {
+  id                String      @id @default(cuid())
+  userId            String
+  loanType          LoanType
+  amount            Decimal     @db.Decimal(15, 2)
+  tenure            Int         // in months
+  interestRate      Decimal     @db.Decimal(5, 2)
+  emiAmount         Decimal?    @db.Decimal(10, 2)
+  processingFee     Decimal?    @db.Decimal(10, 2)
+  status            LoanStatus  @default(PENDING)
+  
+  // Application Details
+  purpose           String?
+  monthlyIncome     Decimal?    @db.Decimal(12, 2)
+  employmentType    String?     // SALARIED, SELF_EMPLOYED, BUSINESS
+  companyName       String?
+  workExperience    Int?        // in months
+  
+  // Loan Details
+  applicationDate   DateTime    @default(now())
+  approvalDate      DateTime?
+  disbursalDate     DateTime?
+  closureDate       DateTime?
+  
+  // Credit Assessment
+  creditScore       Int?
+  riskCategory      String?     // LOW, MEDIUM, HIGH
+  approvedBy        String?
+  rejectedReason    String?
+  
+  // Relations
+  user              User        @relation(fields: [userId], references: [id])
+  transactions      Transaction[]
+  
+  @@map("loans")
+}
+
+model Investment {
+  id              String           @id @default(cuid())
+  userId          String
+  type            InvestmentType
+  fundName        String
+  fundCode        String?
+  category        String           // EQUITY, DEBT, HYBRID, etc.
+  
+  // Investment Details
+  amount          Decimal          @db.Decimal(15, 2)
+  units           Decimal?         @db.Decimal(15, 4)
+  nav             Decimal?         @db.Decimal(10, 4)
+  currentValue    Decimal?         @db.Decimal(15, 2)
+  
+  // SIP Details (if applicable)
+  sipAmount       Decimal?         @db.Decimal(10, 2)
+  sipDate         Int?             // Day of month for SIP
+  sipFrequency    String?          // MONTHLY, QUARTERLY
+  
+  status          InvestmentStatus @default(ACTIVE)
+  
+  // Dates
+  startDate       DateTime         @default(now())
+  maturityDate    DateTime?
+  lastTransactionDate DateTime?
+  
+  // Relations
+  user            User             @relation(fields: [userId], references: [id])
+  transactions    Transaction[]
+  
+  @@map("investments")
+}
+
+model InsurancePolicy {
+  id                String         @id @default(cuid())
+  userId            String
+  type              InsuranceType
+  policyNumber      String         @unique
+  
+  // Policy Details
+  coverageAmount    Decimal        @db.Decimal(15, 2)
+  premiumAmount     Decimal        @db.Decimal(10, 2)
+  premiumFrequency  String         // MONTHLY, QUARTERLY, HALF_YEARLY, YEARLY
+  
+  // Policy Period
+  startDate         DateTime
+  endDate           DateTime
+  status            PolicyStatus   @default(ACTIVE)
+  
+  // Nominee Details
+  nomineeName       String?
+  nomineeRelation   String?
+  nomineeAge        Int?
+  
+  // Policy Features
+  features          Json?          // Store policy features as JSON
+  exclusions        Json?          // Store exclusions as JSON
+  
+  // Relations
+  user              User           @relation(fields: [userId], references: [id])
+  transactions      Transaction[]
+  
+  @@map("insurance_policies")
+}
+
+model Transaction {
+  id                String            @id @default(cuid())
+  userId            String
+  type              TransactionType
+  amount            Decimal           @db.Decimal(15, 2)
+  status            TransactionStatus @default(PENDING)
+  
+  // Payment Details
+  paymentMethod     String?           // UPI, CREDIT_CARD, DEBIT_CARD, NET_BANKING
+  gatewayTransactionId String?
+  gatewayResponse   Json?
+  
+  // Reference Information
+  loanId            String?
+  investmentId      String?
+  policyId          String?
+  
+  // Dates
+  scheduledDate     DateTime?
+  processedDate     DateTime?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  
+  // Relations
+  user              User              @relation(fields: [userId], references: [id])
+  loan              Loan?             @relation(fields: [loanId], references: [id])
+  investment        Investment?       @relation(fields: [investmentId], references: [id])
+  policy            InsurancePolicy?  @relation(fields: [policyId], references: [id])
+  
+  @@map("transactions")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      String   // EMAIL, SMS, PUSH, IN_APP
+  channel   String   // LOAN, INVESTMENT, INSURANCE, GENERAL, SECURITY
+  read      Boolean  @default(false)
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("notifications")
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  action      String
+  resource    String
+  resourceId  String?
+  oldValues   Json?
+  newValues   Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  
+  user User? @relation(fields: [userId], references: [id])
+  
+  @@map("audit_logs")
+}
+
+model SystemConfiguration {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("system_configurations")
+}
