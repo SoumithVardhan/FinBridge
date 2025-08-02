@@ -624,7 +624,6 @@ const CustomerPortalPage: React.FC = () => {
             icon={LogOut}
           >
             Logout
-                  setShowResetPassword(false);
           </Button>
         </div>
 

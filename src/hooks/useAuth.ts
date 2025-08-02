@@ -175,6 +175,34 @@ export const useAuth = () => {
     }
   };
 
+  const resetPassword = async (email: string, newPassword: string): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const foundUser = mockUsers.find(u => u.email === email);
+      if (!foundUser) {
+        setError('No account found with this email address');
+        setIsLoading(false);
+        return false;
+      }
+
+      // In real implementation, this would update the password in the database
+      // For now, we'll just simulate a successful password reset
+      foundUser.password = newPassword;
+      
+      setIsLoading(false);
+      return true;
+    } catch (err) {
+      setError('Failed to reset password. Please try again.');
+      setIsLoading(false);
+      return false;
+    }
+  };
+
   const updateProfile = (updates: Partial<User>) => {
     if (user) {
       setUser({ ...user, ...updates });
@@ -189,6 +217,7 @@ export const useAuth = () => {
     register,
     logout,
     forgotPassword,
+    resetPassword,
     updateProfile,
     isAuthenticated: !!user?.isAuthenticated
   };
