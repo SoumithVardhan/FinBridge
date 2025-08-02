@@ -8,7 +8,6 @@ class RedisService {
   constructor() {
     this.client = createClient({
       url: process.env.REDIS_URL || 'redis://localhost:6379',
-      retry_delay_on_failover: 100,
       socket: {
         connectTimeout: 5000,
       },

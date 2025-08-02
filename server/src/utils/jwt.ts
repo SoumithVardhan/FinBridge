@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { logger } from './logger';
 import { redisService } from '../config/redis';
 import { JWTPayload, TokenPair } from '../types';
@@ -8,8 +8,8 @@ export { JWTPayload, TokenPair };
 class JWTService {
   private accessTokenSecret: string;
   private refreshTokenSecret: string;
-  private accessTokenExpiry: string;
-  private refreshTokenExpiry: string;
+  private accessTokenExpiry: string | number;
+  private refreshTokenExpiry: string | number;
 
   constructor() {
     this.accessTokenSecret = process.env.JWT_ACCESS_SECRET!;
@@ -24,11 +24,15 @@ class JWTService {
 
   generateAccessToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): string {
     try {
-      return jwt.sign(payload, this.accessTokenSecret, {
-        expiresIn: this.accessTokenExpiry,
-        issuer: 'finbridge',
-        audience: 'finbridge-users',
-      });
+      return jwt.sign(
+        payload, 
+        this.accessTokenSecret, 
+        { 
+          expiresIn: '15m',
+          issuer: 'finbridge',
+          audience: 'finbridge-users'
+        }
+      );
     } catch (error) {
       logger.error('Error generating access token:', error);
       throw new Error('Failed to generate access token');
@@ -37,11 +41,15 @@ class JWTService {
 
   generateRefreshToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): string {
     try {
-      return jwt.sign(payload, this.refreshTokenSecret, {
-        expiresIn: this.refreshTokenExpiry,
-        issuer: 'finbridge',
-        audience: 'finbridge-users',
-      });
+      return jwt.sign(
+        payload, 
+        this.refreshTokenSecret, 
+        { 
+          expiresIn: '7d',
+          issuer: 'finbridge',
+          audience: 'finbridge-users'
+        }
+      );
     } catch (error) {
       logger.error('Error generating refresh token:', error);
       throw new Error('Failed to generate refresh token');

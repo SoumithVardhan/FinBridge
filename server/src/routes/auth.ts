@@ -185,7 +185,7 @@ router.post('/refresh', generalAuthLimiter, AuthController.refreshToken);
  *       401:
  *         description: Authentication required
  */
-router.post('/logout', authenticate, AuthController.logout);
+router.post('/logout', authenticate, (req, res) => AuthController.logout(req as any, res));
 
 /**
  * @swagger
@@ -269,7 +269,7 @@ router.post('/reset-password', authLimiter, AuthController.resetPassword);
  *       200:
  *         description: Password changed successfully
  */
-router.post('/change-password', authenticate, AuthController.changePassword);
+router.post('/change-password', authenticate, (req, res) => AuthController.changePassword(req as any, res));
 
 /**
  * @swagger
@@ -285,7 +285,7 @@ router.post('/change-password', authenticate, AuthController.changePassword);
  *       401:
  *         description: Authentication required
  */
-router.get('/profile', authenticate, AuthController.getProfile);
+router.get('/profile', authenticate, (req, res) => AuthController.getProfile(req as any, res));
 
 /**
  * @swagger
@@ -313,7 +313,7 @@ router.get('/profile', authenticate, AuthController.getProfile);
  *       400:
  *         description: Invalid verification code
  */
-router.post('/verify-email', authenticate, AuthController.verifyEmail);
+router.post('/verify-email', authenticate, (req, res) => AuthController.verifyEmail(req as any, res));
 
 /**
  * @swagger
@@ -329,6 +329,6 @@ router.post('/verify-email', authenticate, AuthController.verifyEmail);
  *       400:
  *         description: Email already verified
  */
-router.post('/send-email-verification', authenticate, AuthController.sendEmailVerification);
+router.post('/send-email-verification', authenticate, (req, res) => AuthController.sendEmailVerification(req as any, res));
 
 export default router;

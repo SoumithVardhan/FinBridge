@@ -156,7 +156,7 @@ class App {
           version: process.env.npm_package_version || '1.0.0'
         };
 
-        const statusCode = healthResponse.status === 'healthy' ? 200 : 503;
+        const statusCode = healthResponse.success ? 200 : 503;
         res.status(statusCode).json(healthResponse);
       } catch (error) {
         logger.error('Health check failed:', error);
