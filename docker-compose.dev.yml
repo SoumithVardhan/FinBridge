@@ -16,6 +16,12 @@ services:
       - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
     networks:
       - finbridge_dev_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finbridge -d finbridge_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   # Redis Cache
   redis:
@@ -28,6 +34,12 @@ services:
     networks:
       - finbridge_dev_network
     command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   # Backend API (Development)
   backend:
@@ -53,8 +65,10 @@ services:
     ports:
       - "5001:5000"
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - finbridge_dev_network
     volumes:
