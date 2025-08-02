@@ -11,7 +11,6 @@ class RedisService {
       retry_delay_on_failover: 100,
       socket: {
         connectTimeout: 5000,
-        lazyConnect: true,
       },
     });
 

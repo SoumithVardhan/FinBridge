@@ -44,7 +44,7 @@ export const authenticate = (
     const payload = jwtService.verifyAccessToken(token);
     
     // Add user information to request
-    req.user = payload;
+    (req as AuthenticatedRequest).user = payload;
     req.userId = payload.userId;
 
     logger.debug(`User authenticated: ${payload.userId}`);

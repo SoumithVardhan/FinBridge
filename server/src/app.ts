@@ -17,8 +17,6 @@ import { ApiResponse } from './types';
 import authRoutes from './routes/auth';
 
 interface HealthCheckResponse extends ApiResponse {
-  status: string;
-  timestamp: string;
   services: {
     database: boolean;
     redis: boolean;
@@ -148,8 +146,8 @@ class App {
         ]);
 
         const healthResponse: HealthCheckResponse = {
-          status: databaseHealth && redisHealth ? 'healthy' : 'unhealthy',
-          timestamp: new Date().toISOString(),
+          success: databaseHealth && redisHealth,
+          message: databaseHealth && redisHealth ? 'All services healthy' : 'Some services unhealthy',
           services: {
             database: databaseHealth,
             redis: redisHealth

@@ -23,7 +23,7 @@ export class AuthController {
       // Validate request body
       const { error, value } = registerSchema.validate(req.body);
       if (error) {
-        res.status(400).json<ApiResponse>({
+        res.status(400).json({
           success: false,
           message: 'Validation failed',
           errors: error.details.map((detail) => detail.message)
