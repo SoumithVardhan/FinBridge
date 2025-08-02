@@ -39,3 +39,6 @@ coverage/
 # Backup files
 backup_archive/
 *.backup
+
+# Local Netlify folder
+.netlify
