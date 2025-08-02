@@ -63,7 +63,7 @@ services:
       - /app/dist
       - backend_dev_uploads:/app/uploads
       - backend_dev_logs:/app/logs
-    command: npm run dev
+    command: sh -c "npx prisma generate && npx prisma db push && npm run dev"
 
   # Frontend React App (Development)
   frontend:
@@ -85,7 +85,7 @@ services:
       - .:/app
       - /app/node_modules
       - /app/dist
-    command: npm run dev
+    command: sh -c "npm run dev -- --host 0.0.0.0"
 
   # Database Admin
   adminer:

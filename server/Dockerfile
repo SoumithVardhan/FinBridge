@@ -27,8 +27,10 @@ RUN npm ci
 # Copy source code
 COPY src ./src/
 
-# Generate Prisma client and build
+# Generate Prisma client
 RUN npx prisma generate
+
+# Build the application
 RUN npm run build
 
 # Production image
@@ -53,9 +55,11 @@ COPY --from=deps /app/package.json ./package.json
 # Copy built application from builder stage
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/package.json ./package.json
 
 # Copy prisma client
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
 # Create necessary directories
 RUN mkdir -p uploads logs && \

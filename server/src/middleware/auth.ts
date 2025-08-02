@@ -4,6 +4,12 @@ import { logger } from '../utils/logger';
 import { UserRole } from '@prisma/client';
 
 // Extend Express Request interface
+export interface AuthenticatedRequest extends Request {
+  user: JWTPayload;
+  userId: string;
+}
+
+// Extend Express Request interface globally
 declare global {
   namespace Express {
     interface Request {
@@ -11,12 +17,6 @@ declare global {
       userId?: string;
     }
   }
-}
-
-export interface AuthenticatedRequest extends Request {
-  user: JWTPayload;
-  userId: string;
-  body: any;
 }
 
 /**

@@ -12,6 +12,7 @@ import {
 } from '../utils/validation';
 import { UserRole, KYCStatus } from '@prisma/client';
 import { AuthenticatedRequest } from '../middleware/auth';
+import { ApiResponse } from '../types';
 
 export class AuthController {
   /**
@@ -22,10 +23,10 @@ export class AuthController {
       // Validate request body
       const { error, value } = registerSchema.validate(req.body);
       if (error) {
-        res.status(400).json({
+        res.status(400).json<ApiResponse>({
           success: false,
           message: 'Validation failed',
-          errors: error.details.map((detail: any) => detail.message)
+          errors: error.details.map((detail) => detail.message)
         });
         return;
       }

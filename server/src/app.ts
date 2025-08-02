@@ -11,12 +11,12 @@ import 'express-async-errors';
 import { connectDatabase, disconnectDatabase, checkDatabaseHealth } from './config/database';
 import { redisService } from './config/redis';
 import { logger, morganStream } from './utils/logger';
+import { ApiResponse } from './types';
 
 // Routes
 import authRoutes from './routes/auth';
 
-// Types
-interface HealthCheckResponse {
+interface HealthCheckResponse extends ApiResponse {
   status: string;
   timestamp: string;
   services: {

@@ -1,19 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { logger } from './logger';
 import { redisService } from '../config/redis';
+import { JWTPayload, TokenPair } from '../types';
 
-export interface JWTPayload {
-  userId: string;
-  email: string;
-  role: string;
-  iat?: number;
-  exp?: number;
-}
-
-export interface TokenPair {
-  accessToken: string;
-  refreshToken: string;
-}
+export { JWTPayload, TokenPair };
 
 class JWTService {
   private accessTokenSecret: string;
