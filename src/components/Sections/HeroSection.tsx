@@ -21,7 +21,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSectionChange }) => {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-600 via-purple-600 to-primary-800">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-600 via-red-700 to-primary-800">
         <div className="absolute inset-0 bg-black/20"></div>
       </div>
       
@@ -51,7 +51,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSectionChange }) => {
                 onClick={() => onSectionChange('portal')}
                 icon={ArrowRight}
                 iconPosition="right"
-                className="!bg-white !text-indigo-600 hover:!bg-gray-100 font-semibold shadow-lg"
+                className="!bg-white !text-red-600 hover:!bg-gray-100 font-semibold shadow-lg"
               >
                 Get Started Today
               </Button>
@@ -59,7 +59,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSectionChange }) => {
                 size="lg"
                 variant="outline"
                 onClick={scrollToServices}
-                className="!border-2 !border-white !text-white hover:!bg-white hover:!text-indigo-600 font-semibold"
+                className="!border-2 !border-white !text-white hover:!bg-white hover:!text-red-600 font-semibold"
               >
                 Learn More
               </Button>
