@@ -28,6 +28,7 @@ const Footer: React.FC<FooterProps> = ({ onSectionChange }) => {
     { name: 'Home Loans', section: 'loans' },
     { name: 'Personal Loans', section: 'loans' },
     { name: 'Business Loans', section: 'loans' },
+    { name: 'Education Loans', section: 'loans' },
     { name: 'Life Insurance', section: 'insurance' },
     { name: 'Health Insurance', section: 'insurance' },
     { name: 'Mutual Funds', section: 'mutual-funds' },
@@ -46,13 +47,13 @@ const Footer: React.FC<FooterProps> = ({ onSectionChange }) => {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-r from-primary-600 to-purple-600 rounded-lg flex items-center justify-center mr-3">
-                <span className="text-white font-bold text-lg">FB</span>
+              <div className="w-10 h-10 bg-gradient-to-r from-red-600 to-red-800 rounded-lg flex items-center justify-center mr-3">
+                <span className="text-white font-bold text-lg">SR</span>
               </div>
-              <span className="text-2xl font-bold">FinBridge</span>
+              <span className="text-2xl font-bold">SR Associates</span>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Your trusted partner for comprehensive financial solutions. We help you achieve your financial goals with expert guidance and innovative products.
+              Your trusted financial partner in Guntur, Andhra Pradesh. We provide comprehensive financial solutions including loans, insurance, and investment services with personalized guidance.
             </p>
             <div className="flex space-x-4">
               {socialLinks.map((social, index) => {
@@ -62,7 +63,7 @@ const Footer: React.FC<FooterProps> = ({ onSectionChange }) => {
                     key={index}
                     href={social.href}
                     aria-label={social.label}
-                    className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary-600 transition-colors duration-200"
+                    className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-red-600 transition-colors duration-200"
                   >
                     <Icon className="w-5 h-5" />
                   </a>
@@ -110,16 +111,20 @@ const Footer: React.FC<FooterProps> = ({ onSectionChange }) => {
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
             <div className="space-y-3">
               <div className="flex items-center text-gray-300 text-sm">
-                <Phone className="w-4 h-4 mr-3 text-primary-400" />
-                <span>+91 98765 43210</span>
+                <Phone className="w-4 h-4 mr-3 text-red-400" />
+                <span>+91 96529 37356</span>
               </div>
               <div className="flex items-center text-gray-300 text-sm">
-                <Mail className="w-4 h-4 mr-3 text-primary-400" />
-                <span>info@finbridge.com</span>
+                <Phone className="w-4 h-4 mr-3 text-red-400" />
+                <span>+91 93987 29870</span>
+              </div>
+              <div className="flex items-center text-gray-300 text-sm">
+                <Mail className="w-4 h-4 mr-3 text-red-400" />
+                <span>info@srassociates.com</span>
               </div>
               <div className="flex items-start text-gray-300 text-sm">
-                <MapPin className="w-4 h-4 mr-3 mt-0.5 text-primary-400 flex-shrink-0" />
-                <span>Hyderabad, Telangana, India</span>
+                <MapPin className="w-4 h-4 mr-3 mt-0.5 text-red-400 flex-shrink-0" />
+                <span>OPP. ITC, Srinivasaraopeta, Guntur - 522 004 AP</span>
               </div>
             </div>
             
@@ -147,7 +152,7 @@ const Footer: React.FC<FooterProps> = ({ onSectionChange }) => {
         <div className="border-t border-gray-700 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-300 text-sm">
-              © {currentYear} FinBridge - SR Associates. All rights reserved.
+              © {currentYear} SR Associates. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <button onClick={() => handleLinkClick('privacy')} className="text-gray-300 hover:text-white text-sm transition-colors">

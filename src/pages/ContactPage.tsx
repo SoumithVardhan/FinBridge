@@ -21,31 +21,31 @@ const ContactPage: React.FC = () => {
     {
       icon: Phone,
       title: 'Call Us',
-      details: '+91 98765 43210',
-      action: 'tel:+919876543210',
+      details: '+91 96529 37356',
+      action: 'tel:+919652937356',
       description: 'Speak directly with our financial experts',
       gradient: 'from-blue-500 to-indigo-600'
     },
     {
       icon: MessageSquare,
       title: 'WhatsApp',
-      details: '+91 98765 43210',
-      action: 'https://wa.me/919876543210',
+      details: '+91 96529 37356',
+      action: 'https://wa.me/919652937356',
       description: 'Quick support via WhatsApp chat',
       gradient: 'from-green-500 to-emerald-600'
     },
     {
       icon: Mail,
       title: 'Email',
-      details: 'info@finbridge.com',
-      action: 'mailto:info@finbridge.com',
+      details: 'info@srassociates.com',
+      action: 'mailto:info@srassociates.com',
       description: 'Send us detailed inquiries',
       gradient: 'from-purple-500 to-pink-600'
     },
     {
       icon: MapPin,
       title: 'Visit Us',
-      details: 'Hyderabad, Telangana',
+      details: 'OPP. ITC, Srinivasaraopeta, Guntur - 522 004',
       action: '#',
       description: 'Meet us at our office',
       gradient: 'from-orange-500 to-red-600'
@@ -164,9 +164,9 @@ const ContactPage: React.FC = () => {
             </div>
 
             {/* Office Hours */}
-            <Card className="bg-gray-800 border-gray-700">
+            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
               <div className="flex items-center mb-4">
-                <Clock className="w-6 h-6 text-primary-400 mr-3" />
+                <Clock className="w-6 h-6 text-red-400 mr-3" />
                 <h4 className="text-xl font-bold text-white">Office Hours</h4>
               </div>
               <div className="space-y-3">
@@ -177,11 +177,11 @@ const ContactPage: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </Card>
+            </div>
 
             {/* Additional Info */}
             <div className="mt-8 p-6 bg-primary-900/50 rounded-xl border border-primary-700">
-              <h4 className="text-lg font-semibold text-white mb-3">Why Choose FinBridge?</h4>
+              <h4 className="text-lg font-semibold text-white mb-3">Why Choose SR Associates?</h4>
               <ul className="space-y-2 text-sm text-gray-300">
                 <li className="flex items-center">
                   <CheckCircle className="w-4 h-4 text-green-400 mr-2" />

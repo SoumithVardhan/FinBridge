@@ -17,7 +17,7 @@ const ServicesOverview: React.FC<ServicesOverviewProps> = ({ onSectionChange }) 
       gradient: 'from-blue-500 to-indigo-600',
       features: ['Home Loans', 'Personal Loans', 'Business Loans', 'Education Loans'],
       buttonText: 'Explore Loans',
-      buttonColor: 'bg-blue-600 hover:bg-blue-700',
+      buttonColor: 'bg-red-600 hover:bg-red-700',
     },
     {
       id: 'insurance',
@@ -27,7 +27,7 @@ const ServicesOverview: React.FC<ServicesOverviewProps> = ({ onSectionChange }) 
       gradient: 'from-green-500 to-emerald-600',
       features: ['Life Insurance', 'Health Insurance', 'General Insurance', 'Motor Insurance'],
       buttonText: 'View Insurance',
-      buttonColor: 'bg-green-600 hover:bg-green-700',
+      buttonColor: 'bg-red-600 hover:bg-red-700',
     },
     {
       id: 'mutual-funds',
@@ -37,7 +37,7 @@ const ServicesOverview: React.FC<ServicesOverviewProps> = ({ onSectionChange }) 
       gradient: 'from-purple-500 to-pink-600',
       features: ['Equity Funds', 'Debt Funds', 'Hybrid Funds', 'SIP Plans'],
       buttonText: 'Start Investing',
-      buttonColor: 'bg-purple-600 hover:bg-purple-700',
+      buttonColor: 'bg-red-600 hover:bg-red-700',
     },
     {
       id: 'portal',
@@ -47,7 +47,7 @@ const ServicesOverview: React.FC<ServicesOverviewProps> = ({ onSectionChange }) 
       gradient: 'from-orange-500 to-red-600',
       features: ['Account Management', 'Transaction History', 'Document Upload', '24/7 Support'],
       buttonText: 'Access Portal',
-      buttonColor: 'bg-orange-600 hover:bg-orange-700',
+      buttonColor: 'bg-red-600 hover:bg-red-700',
     },
   ];
 
@@ -114,7 +114,7 @@ const ServicesOverview: React.FC<ServicesOverviewProps> = ({ onSectionChange }) 
         {/* Why Choose Us */}
         <div className="mt-20">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">Why Choose FinBridge?</h3>
+            <h3 className="text-3xl font-bold text-gray-900 mb-4">Why Choose SR Associates?</h3>
             <p className="text-lg text-gray-600">We're committed to providing exceptional financial services with transparency and trust</p>
           </div>
 

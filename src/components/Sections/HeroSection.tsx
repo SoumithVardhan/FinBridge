@@ -36,12 +36,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSectionChange }) => {
           <div className="text-white space-y-8 animate-slide-up">
             <div className="space-y-4">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
-                Your Complete
-                <span className="block text-yellow-300">Financial Partner</span>
+                Your Success is
+                <span className="block text-yellow-300">our Satisfaction</span>
               </h1>
               <p className="text-xl text-gray-200 leading-relaxed max-w-2xl">
-                From loans to insurance, mutual funds to financial planning - 
-                FinBridge provides comprehensive financial solutions tailored to your needs with industry-leading security and support.
+                SR Associates provides comprehensive financial solutions in Guntur, Andhra Pradesh. 
+                From education loans to insurance, business loans to mutual funds - we're your trusted financial partner.
               </p>
             </div>
 

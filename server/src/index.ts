@@ -1,4 +1,10 @@
-import 'reflect-metadata';
+// Load reflect-metadata if available
+try {
+  require('reflect-metadata');
+} catch (error) {
+  // reflect-metadata is optional
+}
+
 import dotenv from 'dotenv';
 import { connectDatabase } from './config/database';
 import { redisService } from './config/redis';

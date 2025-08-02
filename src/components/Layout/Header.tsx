@@ -44,10 +44,10 @@ const Header: React.FC<HeaderProps> = ({ currentSection, onSectionChange }) => {
             className="flex items-center cursor-pointer group"
             onClick={() => handleNavClick('home')}
           >
-            <div className="w-10 h-10 bg-gradient-to-r from-primary-600 to-purple-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-105 transition-transform">
-              <span className="text-white font-bold text-lg">FB</span>
+            <div className="w-10 h-10 bg-gradient-to-r from-red-600 to-red-800 rounded-lg flex items-center justify-center mr-3 group-hover:scale-105 transition-transform">
+              <span className="text-white font-bold text-lg">SR</span>
             </div>
-            <span className="text-2xl font-bold gradient-text">FinBridge</span>
+            <span className="text-2xl font-bold gradient-text">SR Associates</span>
           </div>
 
           {/* Desktop Navigation */}
