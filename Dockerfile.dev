@@ -9,8 +9,11 @@ RUN npm install
 # Copy source code
 COPY . .
 
+# Install dependencies if package.json changed
+RUN npm install
+
 # Expose port
 EXPOSE 5173
 
-# Start development server
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+# Start development server with host binding
+CMD ["npm", "run", "dev"]
