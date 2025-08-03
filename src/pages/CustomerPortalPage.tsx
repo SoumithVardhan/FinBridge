@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Lock, FileText, CreditCard, TrendingUp, HeadphonesIcon, LogOut, CheckCircle, Clock, AlertCircle, UserPlus, Mail } from 'lucide-react';
 import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
@@ -19,6 +19,29 @@ const CustomerPortalPage: React.FC = () => {
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+
+  // Debug information
+  useEffect(() => {
+    console.log('🔍 Frontend Debug Info:', {
+      VITE_API_URL: import.meta.env.VITE_API_URL,
+      MODE: import.meta.env.MODE,
+      NODE_ENV: import.meta.env.VITE_NODE_ENV,
+      ALL_ENV: import.meta.env
+    });
+    
+    // Test API health check
+    fetch('https://sr-associates-api.vercel.app/api/health')
+      .then(response => response.json())
+      .then(data => console.log('✅ API Health Check:', data))
+      .catch(error => console.error('❌ API Health Check Failed:', error));
+      
+    // Test environment variable access
+    console.log('🌍 Environment variables test:', {
+      hasViteApiUrl: !!import.meta.env.VITE_API_URL,
+      viteApiUrlValue: import.meta.env.VITE_API_URL,
+      envKeys: Object.keys(import.meta.env)
+    });
+  }, []);
 
   // Login form management
   const loginForm = useFormManager({

@@ -6,7 +6,9 @@ class AuthService {
   private baseURL: string;
 
   constructor() {
-    this.baseURL = 'https://sr-associates-api.vercel.app/api';
+    // Use environment variable with fallback
+    this.baseURL = import.meta.env.VITE_API_URL || 'https://sr-associates-api.vercel.app/api';
+    console.log('AuthService initialized with baseURL:', this.baseURL);
   }
 
   private async makeRequest<T>(
@@ -25,23 +27,37 @@ class AuthService {
         defaultHeaders['Authorization'] = `Bearer ${token}`;
       }
 
+      console.log(`Making request to: ${url}`, {
+        method: options.method || 'GET',
+        headers: defaultHeaders
+      });
+
       const response = await fetch(url, {
         ...options,
+        mode: 'cors',
+        credentials: 'omit',
         headers: {
           ...defaultHeaders,
           ...options.headers,
         },
       });
 
+      console.log(`Response status: ${response.status}`, response);
+
       const data = await response.json();
+      console.log('Response data:', data);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Request failed');
+        throw new Error(data.message || `HTTP ${response.status}: ${response.statusText}`);
       }
 
       return data;
     } catch (error) {
-      console.error('API Request failed:', error);
+      console.error('API Request failed:', {
+        endpoint,
+        baseURL: this.baseURL,
+        error: error.message
+      });
       throw error;
     }
   }

@@ -6,8 +6,8 @@ const API_CONFIG = {
   // Development API URL
   DEVELOPMENT_URL: 'http://localhost:5000',
   
-  // Use production URL by default (since you're deploying)
-  BASE_URL: 'https://sr-associates-api.vercel.app',
+  // Use environment variable with fallback
+  BASE_URL: import.meta.env.VITE_API_URL?.replace('/api', '') || 'https://sr-associates-api.vercel.app',
   
   // API Endpoints
   ENDPOINTS: {
