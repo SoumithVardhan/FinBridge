@@ -53,10 +53,11 @@ class AuthService {
 
       return data;
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       console.error('API Request failed:', {
         endpoint,
         baseURL: this.baseURL,
-        error: error.message
+        error: errorMessage
       });
       throw error;
     }
