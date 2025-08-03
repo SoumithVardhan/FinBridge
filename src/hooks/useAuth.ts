@@ -335,8 +335,23 @@ export const useAuth = () => {
       setIsLoading(false);
       return true;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Registration failed';
-      setError(errorMessage);
+      let userFriendlyMessage = 'Registration failed. Please try again.';
+      
+      if (err instanceof Error) {
+        if (err.message.includes('already exists')) {
+          userFriendlyMessage = 'This email is already registered. Try logging in or use a different email.';
+        } else if (err.message.includes('network') || err.message.includes('fetch')) {
+          userFriendlyMessage = 'Connection problem. Please check your internet and try again.';
+        } else if (err.message.includes('validation') || err.message.includes('required')) {
+          userFriendlyMessage = 'Please check your information and try again.';
+        } else if (err.message.includes('timeout')) {
+          userFriendlyMessage = 'Registration is taking longer than expected. Please try again.';
+        } else {
+          userFriendlyMessage = err.message || 'Registration failed. Please try again.';
+        }
+      }
+      
+      setError(userFriendlyMessage);
       setIsLoading(false);
       return false;
     }

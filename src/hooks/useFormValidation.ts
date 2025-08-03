@@ -96,10 +96,23 @@ export const commonValidationRules = {
   },
   phone: {
     required: true,
-    pattern: /^[6-9]\d{9}$/,
     custom: (value: string) => {
-      const cleaned = value.replace(/\s+/g, '');
-      if (cleaned.length !== 10) return 'Phone number must be 10 digits';
+      if (!value?.trim()) return 'Phone number is required';
+      
+      // Remove all non-digit characters
+      const cleaned = value.replace(/\D/g, '');
+      
+      // Handle +91 country code
+      let phoneNumber = cleaned;
+      if (cleaned.startsWith('91') && cleaned.length === 12) {
+        phoneNumber = cleaned.substring(2);
+      }
+      
+      // Check for valid 10-digit Indian mobile number
+      if (!/^[6-9]\d{9}$/.test(phoneNumber)) {
+        return 'Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9';
+      }
+      
       return null;
     }
   },
@@ -115,15 +128,46 @@ export const commonValidationRules = {
     required: true,
     minLength: 2,
     maxLength: 50,
-    pattern: /^[a-zA-Z\s]+$/,
+    custom: (value: string) => {
+      if (!value?.trim()) return 'Name is required';
+      
+      const trimmed = value.trim();
+      if (trimmed.length < 2) return 'Name must be at least 2 characters';
+      if (trimmed.length > 50) return 'Name must be less than 50 characters';
+      
+      // Allow letters, spaces, apostrophes, hyphens, and dots (for names like O'Connor, Mary-Jane, Jr.)
+      if (!/^[a-zA-Z\s'-.]+$/.test(trimmed)) {
+        return 'Name can only contain letters, spaces, apostrophes, hyphens, and dots';
+      }
+      
+      return null;
+    }
   },
   password: {
     required: true,
     minLength: 8,
     custom: (value: string) => {
-      if (!/(?=.*[a-z])/.test(value)) return 'Password must contain at least one lowercase letter';
-      if (!/(?=.*[A-Z])/.test(value)) return 'Password must contain at least one uppercase letter';
-      if (!/(?=.*\d)/.test(value)) return 'Password must contain at least one number';
+      if (!value) return 'Password is required';
+      if (value.length < 8) return 'Password must be at least 8 characters';
+      
+      // Count different character types
+      let score = 0;
+      const missing = [];
+      
+      if (!/[a-z]/.test(value)) missing.push('lowercase letter');
+      else score++;
+      
+      if (!/[A-Z]/.test(value)) missing.push('uppercase letter');
+      else score++;
+      
+      if (!/\d/.test(value)) missing.push('number');
+      else score++;
+      
+      // Require at least 2 out of 3 criteria (more user-friendly)
+      if (score < 2) {
+        return `Password needs at least 2 of: ${missing.slice(0, 2).join(', ')}`;
+      }
+      
       return null;
     }
   },
