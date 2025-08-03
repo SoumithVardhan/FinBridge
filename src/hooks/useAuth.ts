@@ -6,7 +6,7 @@ class AuthService {
   private baseURL: string;
 
   constructor() {
-    this.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+    this.baseURL = (import.meta as any).env?.VITE_API_URL || 'https://sr-associates-api.vercel.app/api';
   }
 
   private async makeRequest<T>(
