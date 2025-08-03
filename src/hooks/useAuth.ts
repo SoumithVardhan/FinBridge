@@ -50,9 +50,28 @@ class AuthService {
     // Convert null values to undefined and add computed properties
     const cleanedUser = nullToUndefined(user);
     return {
-      ...cleanedUser,
-      name: `${cleanedUser.firstName} ${cleanedUser.lastName}`,
-      isAuthenticated: true
+      id: cleanedUser.id || '',
+      firstName: cleanedUser.firstName || '',
+      lastName: cleanedUser.lastName || '',
+      email: cleanedUser.email || '',
+      phone: cleanedUser.phone || '',
+      role: cleanedUser.role || 'USER',
+      kycStatus: cleanedUser.kycStatus || 'PENDING',
+      emailVerified: cleanedUser.emailVerified || false,
+      phoneVerified: cleanedUser.phoneVerified || false,
+      dateOfBirth: cleanedUser.dateOfBirth,
+      gender: cleanedUser.gender,
+      addressLine1: cleanedUser.addressLine1,
+      addressLine2: cleanedUser.addressLine2,
+      city: cleanedUser.city,
+      state: cleanedUser.state,
+      pincode: cleanedUser.pincode,
+      country: cleanedUser.country,
+      createdAt: cleanedUser.createdAt || new Date().toISOString(),
+      lastLoginAt: cleanedUser.lastLoginAt,
+      name: `${cleanedUser.firstName || ''} ${cleanedUser.lastName || ''}`.trim(),
+      isAuthenticated: true,
+      portfolio: cleanedUser.portfolio
     };
   }
 
