@@ -11,7 +11,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useFormManager } from '../hooks/useFormManager';
 import { commonValidationRules } from '../hooks/useFormValidation';
 import { RegisterData, LoginCredentials } from '../types';
-import { checkAPIHealth } from '../utils/api';
+import { checkAPIHealthWithRetry } from '../utils/api';
 
 const CustomerPortalPage: React.FC = () => {
   const { user, isLoading, error, login, register, logout, forgotPassword, resetPassword, isAuthenticated } = useAuth();
@@ -31,7 +31,7 @@ const CustomerPortalPage: React.FC = () => {
     });
     
     // Test API health check
-    checkAPIHealth()
+    checkAPIHealthWithRetry()
       .then(data => console.log('✅ API Health Check:', data))
       .catch(error => console.error('❌ API Health Check Failed:', error));
       

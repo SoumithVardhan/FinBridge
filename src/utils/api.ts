@@ -72,4 +72,25 @@ export const checkAPIHealth = async () => {
   }
 };
 
+// Health check with retry mechanism for development
+export const checkAPIHealthWithRetry = async (maxRetries = 3, delay = 2000) => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const result = await apiCall(API_CONFIG.ENDPOINTS.HEALTH);
+      console.log(`✅ API Health Check successful on attempt ${attempt}`);
+      return result;
+    } catch (error) {
+      console.log(`⚠️ API Health Check attempt ${attempt}/${maxRetries} failed:`, error);
+      
+      if (attempt === maxRetries) {
+        console.error('❌ API Health Check failed after all retries');
+        return { success: false, error: 'API unavailable after retries' };
+      }
+      
+      // Wait before next retry
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+};
+
 export default API_CONFIG;
