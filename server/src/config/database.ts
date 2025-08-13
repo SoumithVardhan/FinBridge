@@ -28,10 +28,25 @@ export { prisma };
 export const connectDatabase = async (): Promise<void> => {
   try {
     await prisma.$connect();
-    logger.info('Database connected successfully');
+    
+    // Test the connection with a simple query
+    await prisma.$queryRaw`SELECT 1`;
+    
+    logger.info('✅ Local PostgreSQL Database connected successfully');
   } catch (error) {
-    logger.error('Database connection failed:', error);
-    process.exit(1);
+    logger.error('❌ Database connection failed:', error);
+    
+    // Provide helpful error messages for common issues
+    if (error instanceof Error) {
+      if (error.message.includes('ECONNREFUSED')) {
+        logger.error('💡 PostgreSQL container is not running. Please run:');
+        logger.error('   make dev  or  docker-compose up -d');
+      } else if (error.message.includes('password authentication failed')) {
+        logger.error('💡 Database authentication failed. Check your .env file');
+      }
+    }
+    
+    throw error;
   }
 };
 
@@ -39,9 +54,9 @@ export const connectDatabase = async (): Promise<void> => {
 export const disconnectDatabase = async (): Promise<void> => {
   try {
     await prisma.$disconnect();
-    logger.info('Database disconnected successfully');
+    logger.info('📤 Database disconnected successfully');
   } catch (error) {
-    logger.error('Database disconnection error:', error);
+    logger.error('❌ Database disconnection error:', error);
   }
 };
 
@@ -51,7 +66,7 @@ export const checkDatabaseHealth = async (): Promise<boolean> => {
     await prisma.$queryRaw`SELECT 1`;
     return true;
   } catch (error) {
-    logger.error('Database health check failed:', error);
+    logger.error('❌ Database health check failed:', error);
     return false;
   }
 };

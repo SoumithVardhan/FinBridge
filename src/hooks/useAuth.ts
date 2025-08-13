@@ -6,9 +6,19 @@ class AuthService {
   private baseURL: string;
 
   constructor() {
-    // Use environment variable with fallback
-    this.baseURL = import.meta.env.VITE_API_URL || 'https://sr-associates-api.vercel.app/api';
-    console.log('AuthService initialized with baseURL:', this.baseURL);
+    // Force local development - NO PRODUCTION FALLBACK
+    this.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+    
+    console.log('🚀 AuthService using API URL:', this.baseURL);
+    
+    // Warn if still pointing to production
+    if (this.baseURL.includes('vercel.app')) {
+      console.warn('⚠️ WARNING: Still using production API! Check your environment variables.');
+      console.warn('⚠️ Expected: http://localhost:5001/api');
+      console.warn('⚠️ Current VITE_API_URL:', import.meta.env.VITE_API_URL);
+    } else {
+      console.log('✅ Using local Docker API correctly');
+    }
   }
 
   private async makeRequest<T>(
@@ -27,7 +37,7 @@ class AuthService {
         defaultHeaders['Authorization'] = `Bearer ${token}`;
       }
 
-      console.log(`Making request to: ${url}`, {
+      console.log(`🔗 Making request to: ${url}`, {
         method: options.method || 'GET',
         headers: defaultHeaders
       });
@@ -42,7 +52,7 @@ class AuthService {
         },
       });
 
-      console.log(`Response status: ${response.status}`, response);
+      console.log(`📡 Response status: ${response.status}`, response);
 
       const data = await response.json();
       console.log('Response data:', data);

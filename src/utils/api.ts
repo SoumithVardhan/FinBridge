@@ -1,13 +1,7 @@
-// API Configuration for FinBridge
+// API Configuration for FinBridge - LOCAL DOCKER DEVELOPMENT
 const API_CONFIG = {
-  // Production API URL (Vercel)
-  PRODUCTION_URL: 'https://sr-associates-api.vercel.app',
-  
-  // Development API URL
-  DEVELOPMENT_URL: 'http://localhost:5000',
-  
-  // Use environment variable with fallback
-  BASE_URL: import.meta.env.VITE_API_URL?.replace('/api', '') || 'https://sr-associates-api.vercel.app',
+  // Local Docker API URL - NO PRODUCTION FALLBACK
+  BASE_URL: import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5001',
   
   // API Endpoints
   ENDPOINTS: {
@@ -36,28 +30,35 @@ const API_CONFIG = {
   }
 };
 
-// Helper function to make API calls
+// Helper function to make API calls with enhanced logging
 export const apiCall = async (endpoint: string, options: RequestInit = {}) => {
   const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+  
+  console.log('🔗 Making API call to:', url);
   
   const defaultOptions: RequestInit = {
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
     },
+    mode: 'cors',
+    credentials: 'omit',
     ...options,
   };
 
   try {
     const response = await fetch(url, defaultOptions);
+    console.log('📡 API Response status:', response.status);
     
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
     }
     
     return await response.json();
   } catch (error) {
-    console.error('API call failed:', error);
+    console.error('❌ API call failed:', error);
+    console.error('🔍 URL attempted:', url);
     throw error;
   }
 };
