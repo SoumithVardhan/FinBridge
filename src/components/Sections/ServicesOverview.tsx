@@ -1,5 +1,5 @@
 import React from 'react';
-import { CreditCard, Shield, TrendingUp, User, ArrowRight } from 'lucide-react';
+import { CreditCard, Shield, TrendingUp, User, ArrowRight, GraduationCap, Globe, BarChart3, PiggyBank } from 'lucide-react';
 import Card from '../UI/Card';
 import Button from '../UI/Button';
 
@@ -30,13 +30,43 @@ const ServicesOverview: React.FC<ServicesOverviewProps> = ({ onSectionChange }) 
       buttonColor: 'bg-red-600 hover:bg-red-700',
     },
     {
-      id: 'mutual-funds',
-      title: 'Mutual Funds',
-      description: 'Smart investment solutions to grow your wealth systematically',
+      id: 'investments',
+      title: 'Investments',
+      description: 'Smart investment solutions including mutual funds and fixed deposits',
       icon: TrendingUp,
       gradient: 'from-purple-500 to-pink-600',
-      features: ['Equity Funds', 'Debt Funds', 'Hybrid Funds', 'SIP Plans'],
+      features: ['Mutual Funds', 'Fixed Deposits', 'SIP Plans', 'Tax Saving'],
       buttonText: 'Start Investing',
+      buttonColor: 'bg-red-600 hover:bg-red-700',
+    },
+    {
+      id: 'study-abroad',
+      title: 'Study Abroad',
+      description: 'Complete education consultancy and visa services',
+      icon: GraduationCap,
+      gradient: 'from-indigo-500 to-purple-600',
+      features: ['Education Consultancy', 'University Applications', 'Education Loans', 'Visa Processing'],
+      buttonText: 'Explore Programs',
+      buttonColor: 'bg-red-600 hover:bg-red-700',
+    },
+    {
+      id: 'visa-services',
+      title: 'Visa Services',
+      description: 'Expert assistance for all types of visa applications',
+      icon: Globe,
+      gradient: 'from-cyan-500 to-blue-600',
+      features: ['B1/B2 Visa', 'Student Visa', 'Work Visa', 'Document Assistance'],
+      buttonText: 'Apply Now',
+      buttonColor: 'bg-red-600 hover:bg-red-700',
+    },
+    {
+      id: 'credit-services',
+      title: 'Credit Services',
+      description: 'CIBIL score check, credit repair, and co-applicant issues',
+      icon: BarChart3,
+      gradient: 'from-red-500 to-pink-600',
+      features: ['Free CIBIL Score', 'Credit Repair', 'Co-applicant Issues', 'Legal Assistance'],
+      buttonText: 'Check Score',
       buttonColor: 'bg-red-600 hover:bg-red-700',
     },
     {
@@ -64,17 +94,17 @@ const ServicesOverview: React.FC<ServicesOverviewProps> = ({ onSectionChange }) 
           </p>
         </div>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* Services Grid - Fixed alignment */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
           {services.map((service, index) => {
             const Icon = service.icon;
             return (
               <Card 
                 key={service.id} 
-                className="group cursor-pointer h-full flex flex-col"
+                className="group cursor-pointer h-full flex flex-col w-full max-w-xs"
                 hover={true}
               >
-                <div className="flex flex-col h-full">
+                <div className="flex flex-col h-full p-6">
                   {/* Icon */}
                   <div className="text-center mb-6">
                     <div className={`w-16 h-16 mx-auto mb-4 bg-gradient-to-r ${service.gradient} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
@@ -89,7 +119,7 @@ const ServicesOverview: React.FC<ServicesOverviewProps> = ({ onSectionChange }) 
                     <ul className="space-y-2">
                       {service.features.map((feature, idx) => (
                         <li key={idx} className="flex items-center text-sm text-gray-600">
-                          <div className="w-1.5 h-1.5 bg-primary-500 rounded-full mr-3"></div>
+                          <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-3 flex-shrink-0"></div>
                           {feature}
                         </li>
                       ))}
@@ -99,7 +129,7 @@ const ServicesOverview: React.FC<ServicesOverviewProps> = ({ onSectionChange }) 
                   {/* Button */}
                   <Button
                     onClick={() => onSectionChange(service.id)}
-                    className={`w-full ${service.buttonColor} text-white group-hover:shadow-lg`}
+                    className={`w-full ${service.buttonColor} text-white group-hover:shadow-lg transition-all duration-200 font-semibold`}
                     icon={ArrowRight}
                     iconPosition="right"
                   >
@@ -120,24 +150,24 @@ const ServicesOverview: React.FC<ServicesOverviewProps> = ({ onSectionChange }) 
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-primary-100 rounded-2xl flex items-center justify-center">
-                <Shield className="w-8 h-8 text-primary-600" />
+              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-2xl flex items-center justify-center">
+                <Shield className="w-8 h-8 text-red-600" />
               </div>
               <h4 className="text-lg font-semibold text-gray-900 mb-2">Secure & Compliant</h4>
               <p className="text-gray-600">Bank-grade security with full regulatory compliance and data protection</p>
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-secondary-100 rounded-2xl flex items-center justify-center">
-                <TrendingUp className="w-8 h-8 text-secondary-600" />
+              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-2xl flex items-center justify-center">
+                <TrendingUp className="w-8 h-8 text-red-600" />
               </div>
               <h4 className="text-lg font-semibold text-gray-900 mb-2">Expert Guidance</h4>
               <p className="text-gray-600">Personalized advice from certified financial experts to maximize your returns</p>
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-purple-100 rounded-2xl flex items-center justify-center">
-                <User className="w-8 h-8 text-purple-600" />
+              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-2xl flex items-center justify-center">
+                <User className="w-8 h-8 text-red-600" />
               </div>
               <h4 className="text-lg font-semibold text-gray-900 mb-2">24/7 Support</h4>
               <p className="text-gray-600">Round-the-clock customer support to assist you whenever you need help</p>

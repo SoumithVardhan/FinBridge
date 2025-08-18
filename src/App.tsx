@@ -7,6 +7,10 @@ import InsurancePage from './pages/InsurancePage';
 import MutualFundsPage from './pages/MutualFundsPage';
 import CustomerPortalPage from './pages/CustomerPortalPage';
 import ContactPage from './pages/ContactPage';
+import StudyAbroadPage from './pages/StudyAbroadPage';
+import InvestmentsPage from './pages/InvestmentsPage';
+import B1B2VisaPage from './pages/B1B2VisaPage';
+import CibilCoApplicantPage from './pages/CibilCoApplicantPage';
 
 function App() {
   const [currentSection, setCurrentSection] = useState('home');
@@ -21,6 +25,14 @@ function App() {
         return <InsurancePage />;
       case 'mutual-funds':
         return <MutualFundsPage />;
+      case 'investments':
+        return <InvestmentsPage />;
+      case 'study-abroad':
+        return <StudyAbroadPage />;
+      case 'b1b2-visa':
+        return <B1B2VisaPage />;
+      case 'cibil-issues':
+        return <CibilCoApplicantPage />;
       case 'portal':
         return <CustomerPortalPage />;
       case 'contact':
