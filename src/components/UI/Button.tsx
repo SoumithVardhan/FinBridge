@@ -43,9 +43,15 @@ const Button: React.FC<ButtonProps> = ({
     lg: 'w-5 h-5',
   };
 
+  // If custom className contains styling that would override variant styles, use only baseClasses
+  const hasCustomStyling = className.includes('bg-') || className.includes('text-') || className.includes('hover:');
+  const buttonClasses = hasCustomStyling 
+    ? `${baseClasses} ${className}`
+    : `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
+
   return (
     <button
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={buttonClasses}
       disabled={disabled || loading}
       {...props}
     >

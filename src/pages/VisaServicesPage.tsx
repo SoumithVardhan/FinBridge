@@ -174,20 +174,20 @@ const VisaServicesPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white pt-16">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-700">
+      <section className="py-20 bg-gradient-to-r from-red-600 to-pink-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
             US Visa Services
           </h1>
-          <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-red-100 mb-8 max-w-3xl mx-auto">
             Expert assistance for all types of US visas. Our experienced team has helped thousands 
             of clients successfully obtain their US visas with a 95% approval rate.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="bg-white text-blue-600 hover:bg-gray-50 px-8 py-3">
+            <Button className="bg-white text-red-600 hover:bg-red-50 hover:text-red-700 px-8 py-3 font-semibold">
               Start Application
             </Button>
-            <Button className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3">
+            <Button className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-red-600 px-8 py-3 font-semibold">
               Free Consultation
             </Button>
           </div>
@@ -271,10 +271,10 @@ const VisaServicesPage: React.FC = () => {
             Get started with a free consultation. Our visa experts are here to guide you through every step.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3">
+            <Button className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 font-semibold">
               Start Application
             </Button>
-            <Button className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-3">
+            <Button className="border-2 border-red-600 text-red-600 bg-transparent hover:bg-red-600 hover:text-white px-8 py-3 font-semibold">
               Free Consultation
             </Button>
           </div>

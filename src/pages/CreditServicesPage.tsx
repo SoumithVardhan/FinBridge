@@ -98,10 +98,10 @@ const CreditServicesPage: React.FC = () => {
             with our expert financial and legal services.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="bg-white text-red-600 hover:bg-gray-50 px-8 py-3">
+            <Button className="bg-white text-red-600 hover:bg-red-50 hover:text-red-700 px-8 py-3 font-semibold">
               Check Free CIBIL Score
             </Button>
-            <Button className="border-2 border-white text-white hover:bg-white hover:text-red-600 px-8 py-3">
+            <Button className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-red-600 px-8 py-3 font-semibold">
               Credit Repair Consultation
             </Button>
           </div>

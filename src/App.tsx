@@ -11,6 +11,8 @@ import StudyAbroadPage from './pages/StudyAbroadPage';
 import InvestmentsPage from './pages/InvestmentsPage';
 import B1B2VisaPage from './pages/B1B2VisaPage';
 import CibilCoApplicantPage from './pages/CibilCoApplicantPage';
+import VisaServicesPage from './pages/VisaServicesPage';
+import CreditServicesPage from './pages/CreditServicesPage';
 
 function App() {
   const [currentSection, setCurrentSection] = useState('home');
@@ -31,8 +33,12 @@ function App() {
         return <StudyAbroadPage />;
       case 'b1b2-visa':
         return <B1B2VisaPage />;
+      case 'visa-services':
+        return <VisaServicesPage />;
       case 'cibil-issues':
         return <CibilCoApplicantPage />;
+      case 'credit-services':
+        return <CreditServicesPage />;
       case 'portal':
         return <CustomerPortalPage />;
       case 'contact':
