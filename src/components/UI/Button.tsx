@@ -25,16 +25,16 @@ const Button: React.FC<ButtonProps> = ({
   const baseClasses = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
   
   const variantClasses = {
-    primary: 'bg-primary-600 hover:bg-primary-700 text-white focus:ring-primary-500 transform hover:scale-105',
-    secondary: 'bg-secondary-600 hover:bg-secondary-700 text-white focus:ring-secondary-500 transform hover:scale-105',
-    outline: 'border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white focus:ring-primary-500',
-    ghost: 'text-primary-600 hover:bg-primary-50 focus:ring-primary-500',
+    primary: 'bg-primary-600 hover:bg-primary-700 text-white focus:ring-primary-500 shadow-md hover:shadow-lg transform hover:scale-105',
+    secondary: 'bg-secondary-600 hover:bg-secondary-700 text-white focus:ring-secondary-500 shadow-md hover:shadow-lg transform hover:scale-105',
+    outline: 'border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white focus:ring-primary-500 shadow-sm hover:shadow-md transition-all duration-200 bg-white hover:border-primary-700',
+    ghost: 'text-primary-600 hover:bg-primary-50 focus:ring-primary-500 hover:text-primary-700',
   };
   
   const sizeClasses = {
-    sm: 'px-3 py-2 text-sm',
-    md: 'px-4 py-2.5 text-sm',
-    lg: 'px-6 py-3 text-base',
+    sm: 'px-4 py-2 text-sm',
+    md: 'px-6 py-3 text-sm',
+    lg: 'px-8 py-3.5 text-base',
   };
 
   const iconSizeClasses = {
@@ -43,11 +43,8 @@ const Button: React.FC<ButtonProps> = ({
     lg: 'w-5 h-5',
   };
 
-  // If custom className contains styling that would override variant styles, use only baseClasses
-  const hasCustomStyling = className.includes('bg-') || className.includes('text-') || className.includes('hover:');
-  const buttonClasses = hasCustomStyling 
-    ? `${baseClasses} ${className}`
-    : `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
+  // Force the variant styles to be applied, ignoring custom className overrides for core styling
+  const buttonClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
 
   return (
     <button

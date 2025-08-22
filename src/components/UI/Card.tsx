@@ -19,13 +19,11 @@ const Card: React.FC<CardProps> = ({
     lg: 'p-8',
   };
 
+  const baseClasses = `bg-white rounded-xl shadow-md border-2 border-gray-400 ${paddingClasses[padding]}`;
+  const hoverClasses = hover ? 'hover:shadow-xl hover:border-gray-500 transition-all duration-300 transform hover:-translate-y-1' : '';
+
   return (
-    <div className={`
-      bg-white rounded-xl shadow-lg border border-gray-100
-      ${hover ? 'hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1' : ''}
-      ${paddingClasses[padding]}
-      ${className}
-    `}>
+    <div className={`${baseClasses} ${hoverClasses} ${className}`}>
       {children}
     </div>
   );

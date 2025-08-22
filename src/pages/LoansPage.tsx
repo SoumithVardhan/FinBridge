@@ -1,469 +1,309 @@
-import React from 'react';
-import { Home, User, Briefcase, GraduationCap, Car, Building, CheckCircle, ArrowRight, Calculator, FileText, Clock, Shield } from 'lucide-react';
+import React, { useState } from 'react';
+import { Home, User, Briefcase, GraduationCap, Car, Building, CheckCircle, ArrowRight, Calculator, FileText, Clock, Shield, TrendingUp, Heart, Star, Award, Users, Target, Phone, Mail, MapPin } from 'lucide-react';
 import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import EMICalculator from '../components/Calculators/EMICalculator';
-import FormField from '../components/UI/FormField';
-import ProgressSteps from '../components/UI/ProgressSteps';
-import { useFormValidation, commonValidationRules } from '../hooks/useFormValidation';
-import { useState } from 'react';
 
 const LoansPage: React.FC = () => {
   const [selectedLoan, setSelectedLoan] = useState<string | null>(null);
-  const [applicationStep, setApplicationStep] = useState(0);
+  const [showCalculator, setShowCalculator] = useState(false);
   const [applicationData, setApplicationData] = useState({
-    loanType: '',
-    amount: '',
-    tenure: '',
-    income: '',
-    employment: '',
     name: '',
     email: '',
     phone: '',
-    pan: '',
-    address: '',
-    city: '',
-    pincode: '',
-    documents: [] as string[]
+    amount: '',
+    purpose: ''
   });
 
-  // Form validation rules
-  const loanValidation = useFormValidation({
-    amount: {
-      required: true,
-      custom: (value: string) => {
-        const num = parseFloat(value);
-        if (isNaN(num) || num < 100000) return 'Minimum loan amount is ₹1,00,000';
-        if (num > 100000000) return 'Maximum loan amount is ₹10,00,00,000';
-        return null;
-      }
-    },
-    tenure: { required: true },
-    income: {
-      required: true,
-      custom: (value: string) => {
-        const num = parseFloat(value);
-        if (isNaN(num) || num < 15000) return 'Minimum monthly income should be ₹15,000';
-        return null;
-      }
-    },
-    employment: { required: true },
-    name: commonValidationRules.name,
-    email: commonValidationRules.email,
-    phone: commonValidationRules.phone,
-    pan: commonValidationRules.pan,
-    address: { required: true, minLength: 10 },
-    city: { required: true, minLength: 2 },
-    pincode: {
-      required: true,
-      pattern: /^[1-9][0-9]{5}$/,
-      custom: (value: string) => {
-        if (value.length !== 6) return 'PIN code must be 6 digits';
-        return null;
-      }
-    }
-  });
-
+  // Premium loan data with professional SR Associates images
   const loans = [
-    {
-      type: 'Home Loan',
-      icon: Home,
-      rate: '6.5%',
-      description: 'Make your dream home a reality with our competitive home loan rates',
-      features: ['Up to ₹5 Crores', 'Tenure up to 30 years', 'Minimal documentation', 'Quick approval'],
-      eligibility: ['Age: 21-65 years', 'Minimum income: ₹25,000/month', 'Good credit score', 'Stable employment'],
-      gradient: 'from-blue-500 to-indigo-600'
-    },
     {
       type: 'Personal Loan',
       icon: User,
       rate: '10.5%',
       description: 'Instant personal loans for all your immediate financial needs',
+      image: '/images/loans/sr-associates/07a2eb88-3963-473c-86c2-6ba957b57aa5.png',
       features: ['Up to ₹50 Lakhs', 'No collateral required', '24-hour approval', 'Flexible repayment'],
       eligibility: ['Age: 21-60 years', 'Minimum income: ₹20,000/month', 'Employment history: 2+ years', 'Good credit score'],
-      gradient: 'from-green-500 to-emerald-600'
+      gradient: 'from-green-500 to-emerald-600',
+      maxAmount: '₹50,00,000',
+      tenure: '12-60 months',
+      processingFee: '1% onwards'
     },
     {
       type: 'Business Loan',
       icon: Briefcase,
       rate: '8.5%',
       description: 'Fuel your business growth with our tailored business financing solutions',
+      image: '/images/loans/sr-associates/30c97679-f073-41f7-9dc5-dd8f16697e27.png',
       features: ['Up to ₹10 Crores', 'Working capital support', 'Equipment financing', 'Overdraft facility'],
       eligibility: ['Business vintage: 2+ years', 'Annual turnover: ₹10 Lakhs+', 'Good business credit', 'Proper documentation'],
-      gradient: 'from-purple-500 to-pink-600'
+      gradient: 'from-purple-500 to-pink-600',
+      maxAmount: '₹10,00,00,000',
+      tenure: '12-84 months',
+      processingFee: '0.5% onwards'
     },
     {
       type: 'Education Loan',
       icon: GraduationCap,
       rate: '7.5%',
       description: 'Invest in your future with our comprehensive education loan schemes',
+      image: '/images/loans/sr-associates/5a1211be-6188-4c3d-9cd5-4d99cd6e06d8.png',
       features: ['Up to ₹1.5 Crores', 'Covers all expenses', 'Moratorium period', 'Tax benefits'],
       eligibility: ['Admission confirmed', 'Co-applicant required', 'Good academic record', 'Course from approved list'],
-      gradient: 'from-orange-500 to-red-600'
+      gradient: 'from-orange-500 to-red-600',
+      maxAmount: '₹1,50,00,000',
+      tenure: '15 years',
+      processingFee: 'Nil'
+    },
+    {
+      type: 'Home Loan',
+      icon: Home,
+      rate: '6.5%',
+      description: 'Make your dream home a reality with our competitive home loan rates',
+      image: '/images/loans/sr-associates/61dc049f-3b5c-46b0-bcc0-682501cc829b.png',
+      features: ['Up to ₹5 Crores', 'Tenure up to 30 years', 'Minimal documentation', 'Quick approval'],
+      eligibility: ['Age: 21-65 years', 'Minimum income: ₹25,000/month', 'Good credit score', 'Stable employment'],
+      gradient: 'from-blue-500 to-indigo-600',
+      maxAmount: '₹5,00,00,000',
+      tenure: '30 years',
+      processingFee: '0.5% onwards'
     },
     {
       type: 'Vehicle Loan',
       icon: Car,
       rate: '7.5%',
       description: 'Drive your dream vehicle with our attractive auto loan offers',
+      image: '/images/loans/sr-associates/8613ba2c-d07a-4f3e-aa77-708765df3200.png',
       features: ['Up to 90% financing', 'New & used vehicles', 'Quick processing', 'Competitive rates'],
       eligibility: ['Age: 21-65 years', 'Minimum income: ₹15,000/month', 'Valid driving license', 'Good credit history'],
-      gradient: 'from-teal-500 to-cyan-600'
+      gradient: 'from-teal-500 to-cyan-600',
+      maxAmount: '₹1,00,00,000',
+      tenure: '7 years',
+      processingFee: '1% onwards'
     },
     {
       type: 'Mortgage Loan',
       icon: Building,
       rate: '6.5%',
       description: 'Leverage your property value with our flexible mortgage solutions',
+      image: '/images/loans/sr-associates/c14ca927-85e0-43c9-b6ed-0359cf5eed6b.png',
       features: ['Up to 75% of property value', 'Flexible tenure', 'Multiple end-use options', 'Competitive rates'],
       eligibility: ['Property ownership proof', 'Clear property title', 'Good credit score', 'Stable income'],
-      gradient: 'from-indigo-500 to-purple-600'
+      gradient: 'from-indigo-500 to-purple-600',
+      maxAmount: '₹10,00,00,000',
+      tenure: '20 years',
+      processingFee: '0.5% onwards'
     }
   ];
 
-  const applicationSteps = [
-    { title: 'Loan Details', icon: Calculator },
-    { title: 'Personal Info', icon: User },
-    { title: 'Documents', icon: FileText },
-    { title: 'Review & Submit', icon: CheckCircle }
+  // Enhanced statistics
+  const loanStats = [
+    { number: '50,000+', label: 'Loans Approved', icon: CheckCircle, color: 'from-green-500 to-emerald-600' },
+    { number: '₹2,500Cr+', label: 'Amount Disbursed', icon: TrendingUp, color: 'from-blue-500 to-indigo-600' },
+    { number: '98%', label: 'Customer Satisfaction', icon: Heart, color: 'from-pink-500 to-rose-600' },
+    { number: '24 Hrs', label: 'Quick Approval', icon: Clock, color: 'from-purple-500 to-violet-600' }
+  ];
+
+  // Customer testimonials
+  const testimonials = [
+    {
+      name: 'Rajesh Kumar',
+      location: 'Mumbai',
+      loanType: 'Home Loan',
+      rating: 5,
+      comment: 'Excellent service! Got my home loan approved within 48 hours. The process was smooth and transparent.',
+      image: '/images/loans/sr-associates/bed14fa5-1dfa-4685-809a-0ac76d4c5b47.png'
+    },
+    {
+      name: 'Priya Sharma',
+      location: 'Delhi',
+      loanType: 'Personal Loan',
+      rating: 5,
+      comment: 'Quick approval and competitive rates. The team was very supportive throughout the process.',
+      image: '/images/loans/sr-associates/bae62fcc-7f94-4e73-b453-d6744ce6770a.png'
+    },
+    {
+      name: 'Suresh Patel',
+      location: 'Bangalore',
+      loanType: 'Business Loan',
+      rating: 5,
+      comment: 'Helped my business grow with flexible repayment options. Highly recommended!',
+      image: '/images/loans/sr-associates/863535ee-6fe6-4e11-a6b1-4901de22c563.png'
+    }
+  ];
+
+  // Why choose us features
+  const whyChooseUs = [
+    { icon: Award, title: 'Award Winning', description: 'Recognized for excellence in financial services' },
+    { icon: Users, title: '50,000+ Happy Customers', description: 'Trusted by thousands across India' },
+    { icon: Shield, title: 'Secure & Safe', description: 'Bank-grade security for your data' },
+    { icon: Target, title: 'Competitive Rates', description: 'Best-in-market interest rates' }
   ];
 
   const handleLoanSelect = (loanType: string) => {
     setSelectedLoan(loanType);
-    setApplicationData(prev => ({ ...prev, loanType }));
-    setApplicationStep(1);
   };
 
-  const handleNextStep = () => {
-    let fieldsToValidate: { [key: string]: string } = {};
-    
-    if (applicationStep === 1) {
-      fieldsToValidate = {
-        amount: applicationData.amount,
-        tenure: applicationData.tenure,
-        income: applicationData.income,
-        employment: applicationData.employment
-      };
-    } else if (applicationStep === 2) {
-      fieldsToValidate = {
-        name: applicationData.name,
-        email: applicationData.email,
-        phone: applicationData.phone,
-        pan: applicationData.pan,
-        address: applicationData.address,
-        city: applicationData.city,
-        pincode: applicationData.pincode
-      };
-    }
-    
-    if (loanValidation.validateForm(fieldsToValidate)) {
-      setApplicationStep(applicationStep + 1);
-    }
+  const handleInputChange = (field: string, value: string) => {
+    setApplicationData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handlePreviousStep = () => {
-    setApplicationStep(applicationStep - 1);
-    loanValidation.clearAllErrors();
-  };
-
-  const handleApplicationSubmit = () => {
-    const applicationId = `${applicationData.loanType.replace(/\s+/g, '').toUpperCase()}${Date.now()}`;
-    
-    // Show success message
-    alert(`Application submitted successfully!\n\nReference ID: ${applicationId}\n\nNext Steps:\n• Document verification will begin within 24 hours\n• You will receive an email with required documents list\n• Our team will contact you for further processing`);
-    
-    // Reset form
-    setSelectedLoan(null);
-    setApplicationStep(0);
-    setApplicationData({
-      loanType: '', amount: '', tenure: '', income: '', employment: '', 
-      name: '', email: '', phone: '', pan: '', address: '', city: '', pincode: '', documents: []
-    });
-    loanValidation.clearAllErrors();
-  };
+  const FormField: React.FC<{
+    label: string;
+    type: string;
+    value: string;
+    onChange: (value: string) => void;
+    placeholder?: string;
+    required?: boolean;
+  }> = ({ label, type, value, onChange, placeholder, required = false }) => (
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-gray-700">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+        required={required}
+      />
+    </div>
+  );
 
   if (selectedLoan) {
     const loan = loans.find(l => l.type === selectedLoan);
     
     return (
-      <div className="min-h-screen bg-gray-50 pt-16 animate-fade-in">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 pt-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          {/* Application Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{loan?.type} Application</h1>
-            <p className="text-gray-600">Complete your application in 4 simple steps</p>
+          {/* Application Header with Professional Image */}
+          <div className="text-center mb-12">
+            <div className="relative h-72 rounded-2xl overflow-hidden mb-8 shadow-2xl">
+              <img 
+                src={loan?.image || '/images/placeholder.svg'} 
+                alt={loan?.type || 'Loan'}
+                className="w-full h-full object-cover transform scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent">
+                <div className="absolute bottom-8 left-8 text-white">
+                  <h1 className="text-4xl font-bold mb-3">{loan?.type} Application</h1>
+                  <p className="text-xl text-gray-200">Complete your application in simple steps</p>
+                  <div className="flex items-center mt-4 space-x-6">
+                    <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
+                      <span className="text-sm font-semibold">Starting from {loan?.rate}*</span>
+                    </div>
+                    <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
+                      <span className="text-sm font-semibold">Up to {loan?.maxAmount}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Progress Steps */}
-          <ProgressSteps 
-            steps={applicationSteps} 
-            currentStep={applicationStep} 
-            className="mb-8"
-          />
+          <Card className="shadow-xl border-0">
+            <div className="p-8 space-y-8">
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Quick Application Form</h3>
+                <p className="text-gray-600">
+                  Thank you for choosing {loan?.type}. Fill out this form and our team will contact you within 2 hours.
+                </p>
+              </div>
 
-          {/* Application Form */}
-          <Card>
-            {applicationStep === 1 && (
-              <div className="space-y-6">
-                <h3 className="text-xl font-bold text-gray-900">Loan Requirements</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormField
-                    label="Loan Amount"
-                    type="number"
-                    value={applicationData.amount}
-                    onChange={(value) => {
-                      setApplicationData(prev => ({ ...prev, amount: value }));
-                      loanValidation.clearError('amount');
-                    }}
-                    error={loanValidation.errors.amount}
-                    placeholder="Enter loan amount (₹)"
-                    min="100000"
-                    max="100000000"
-                    required
-                  />
-                  
-                  <FormField
-                    label="Tenure"
-                    type="select"
-                    value={applicationData.tenure}
-                    onChange={(value) => {
-                      setApplicationData(prev => ({ ...prev, tenure: value }));
-                      loanValidation.clearError('tenure');
-                    }}
-                    error={loanValidation.errors.tenure}
-                    options={[...Array(30)].map((_, i) => ({
-                      value: (i + 1).toString(),
-                      label: `${i + 1} Year${i > 0 ? 's' : ''}`
-                    }))}
-                    placeholder="Select tenure"
-                    required
-                  />
-                  
-                  <FormField
-                    label="Monthly Income"
-                    type="number"
-                    value={applicationData.income}
-                    onChange={(value) => {
-                      setApplicationData(prev => ({ ...prev, income: value }));
-                      loanValidation.clearError('income');
-                    }}
-                    error={loanValidation.errors.income}
-                    placeholder="Enter monthly income (₹)"
-                    min="15000"
-                    required
-                  />
-                  
-                  <FormField
-                    label="Employment Type"
-                    type="select"
-                    value={applicationData.employment}
-                    onChange={(value) => {
-                      setApplicationData(prev => ({ ...prev, employment: value }));
-                      loanValidation.clearError('employment');
-                    }}
-                    error={loanValidation.errors.employment}
-                    options={[
-                      { value: 'salaried', label: 'Salaried' },
-                      { value: 'self-employed', label: 'Self Employed' },
-                      { value: 'business', label: 'Business Owner' },
-                      { value: 'professional', label: 'Professional' }
-                    ]}
-                    placeholder="Select employment type"
-                    required
-                  />
-                </div>
-                <div className="flex justify-between">
-                  <Button variant="outline" onClick={() => setSelectedLoan(null)}>
-                    Back to Loans
-                  </Button>
-                  <Button onClick={handleNextStep}>
-                    Next: Personal Details
-                  </Button>
+              {/* Application Form */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  label="Full Name"
+                  type="text"
+                  value={applicationData.name}
+                  onChange={(value) => handleInputChange('name', value)}
+                  placeholder="Enter your full name"
+                  required
+                />
+                <FormField
+                  label="Email Address"
+                  type="email"
+                  value={applicationData.email}
+                  onChange={(value) => handleInputChange('email', value)}
+                  placeholder="Enter your email"
+                  required
+                />
+                <FormField
+                  label="Mobile Number"
+                  type="tel"
+                  value={applicationData.phone}
+                  onChange={(value) => handleInputChange('phone', value)}
+                  placeholder="Enter your mobile number"
+                  required
+                />
+                <FormField
+                  label="Loan Amount Required"
+                  type="number"
+                  value={applicationData.amount}
+                  onChange={(value) => handleInputChange('amount', value)}
+                  placeholder="Enter loan amount"
+                  required
+                />
+              </div>
+
+              <FormField
+                label="Purpose of Loan"
+                type="text"
+                value={applicationData.purpose}
+                onChange={(value) => handleInputChange('purpose', value)}
+                placeholder="Briefly describe the purpose"
+              />
+
+              {/* What happens next */}
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6">
+                <h4 className="font-bold text-blue-900 mb-4 text-lg">What happens next?</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-blue-500 rounded-full p-2">
+                      <Phone className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-blue-800 text-sm">Call within 2 hours</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-blue-500 rounded-full p-2">
+                      <FileText className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-blue-800 text-sm">Document verification</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-blue-500 rounded-full p-2">
+                      <CheckCircle className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-blue-800 text-sm">Quick approval</span>
+                  </div>
                 </div>
               </div>
-            )}
 
-            {applicationStep === 2 && (
-              <div className="space-y-6">
-                <h3 className="text-xl font-bold text-gray-900">Personal Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormField
-                    label="Full Name"
-                    value={applicationData.name}
-                    onChange={(value) => {
-                      setApplicationData(prev => ({ ...prev, name: value }));
-                      loanValidation.clearError('name');
-                    }}
-                    error={loanValidation.errors.name}
-                    placeholder="Enter full name"
-                    required
-                  />
-                  
-                  <FormField
-                    label="Email Address"
-                    type="email"
-                    value={applicationData.email}
-                    onChange={(value) => {
-                      setApplicationData(prev => ({ ...prev, email: value }));
-                      loanValidation.clearError('email');
-                    }}
-                    error={loanValidation.errors.email}
-                    placeholder="Enter email address"
-                    required
-                  />
-                  
-                  <FormField
-                    label="Phone Number"
-                    type="tel"
-                    value={applicationData.phone}
-                    onChange={(value) => {
-                      setApplicationData(prev => ({ ...prev, phone: value }));
-                      loanValidation.clearError('phone');
-                    }}
-                    error={loanValidation.errors.phone}
-                    placeholder="Enter phone number"
-                    required
-                  />
-                  
-                  <FormField
-                    label="PAN Number"
-                    value={applicationData.pan}
-                    onChange={(value) => {
-                      setApplicationData(prev => ({ ...prev, pan: value.toUpperCase() }));
-                      loanValidation.clearError('pan');
-                    }}
-                    error={loanValidation.errors.pan}
-                    placeholder="Enter PAN number"
-                    maxLength={10}
-                    required
-                  />
-                  
-                  <div className="md:col-span-2">
-                    <FormField
-                      label="Address"
-                      type="textarea"
-                      value={applicationData.address}
-                      onChange={(value) => {
-                        setApplicationData(prev => ({ ...prev, address: value }));
-                        loanValidation.clearError('address');
-                      }}
-                      error={loanValidation.errors.address}
-                      placeholder="Enter complete address"
-                      rows={3}
-                      required
-                    />
-                  </div>
-                  
-                  <FormField
-                    label="City"
-                    value={applicationData.city}
-                    onChange={(value) => {
-                      setApplicationData(prev => ({ ...prev, city: value }));
-                      loanValidation.clearError('city');
-                    }}
-                    error={loanValidation.errors.city}
-                    placeholder="Enter city"
-                    required
-                  />
-                  
-                  <FormField
-                    label="PIN Code"
-                    value={applicationData.pincode}
-                    onChange={(value) => {
-                      setApplicationData(prev => ({ ...prev, pincode: value }));
-                      loanValidation.clearError('pincode');
-                    }}
-                    error={loanValidation.errors.pincode}
-                    placeholder="Enter PIN code"
-                    maxLength={6}
-                    required
-                  />
-                </div>
-                <div className="flex justify-between">
-                  <Button variant="outline" onClick={handlePreviousStep}>
-                    Previous
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-between">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setSelectedLoan(null)}
+                  className="sm:w-auto"
+                >
+                  ← Back to Loans
+                </Button>
+                <div className="flex gap-4">
+                  <Button 
+                    variant="outline"
+                    onClick={() => setShowCalculator(true)}
+                    icon={Calculator}
+                  >
+                    EMI Calculator
                   </Button>
-                  <Button onClick={handleNextStep}>
-                    Next: Documents
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {applicationStep === 3 && (
-              <div className="space-y-6">
-                <h3 className="text-xl font-bold text-gray-900">Document Upload</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <h4 className="font-semibold text-gray-900 mb-2">Identity Proof</h4>
-                    <p className="text-sm text-gray-600 mb-4">Upload Aadhaar/Passport/Voter ID</p>
-                    <Button size="sm" variant="outline">Choose File</Button>
-                  </div>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <h4 className="font-semibold text-gray-900 mb-2">Income Proof</h4>
-                    <p className="text-sm text-gray-600 mb-4">Upload Salary Slips/ITR</p>
-                    <Button size="sm" variant="outline">Choose File</Button>
-                  </div>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <h4 className="font-semibold text-gray-900 mb-2">Address Proof</h4>
-                    <p className="text-sm text-gray-600 mb-4">Upload Utility Bill/Rent Agreement</p>
-                    <Button size="sm" variant="outline">Choose File</Button>
-                  </div>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <h4 className="font-semibold text-gray-900 mb-2">Bank Statement</h4>
-                    <p className="text-sm text-gray-600 mb-4">Upload 6 months bank statement</p>
-                    <Button size="sm" variant="outline">Choose File</Button>
-                  </div>
-                </div>
-                <div className="flex justify-between">
-                  <Button variant="outline" onClick={handlePreviousStep}>
-                    Previous
-                  </Button>
-                  <Button onClick={() => setApplicationStep(4)}>
-                    Next: Review
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {applicationStep === 4 && (
-              <div className="space-y-6">
-                <h3 className="text-xl font-bold text-gray-900">Review & Submit</h3>
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h4 className="font-semibold text-gray-900 mb-4">Application Summary</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                    <div><span className="font-medium">Loan Type:</span> {applicationData.loanType}</div>
-                    <div><span className="font-medium">Amount:</span> ₹{applicationData.amount}</div>
-                    <div><span className="font-medium">Tenure:</span> {applicationData.tenure} years</div>
-                    <div><span className="font-medium">Monthly Income:</span> ₹{applicationData.income}</div>
-                    <div><span className="font-medium">Name:</span> {applicationData.name}</div>
-                    <div><span className="font-medium">Email:</span> {applicationData.email}</div>
-                    <div><span className="font-medium">Phone:</span> {applicationData.phone}</div>
-                    <div><span className="font-medium">PAN:</span> {applicationData.pan}</div>
-                    <div><span className="font-medium">City:</span> {applicationData.city}</div>
-                    <div><span className="font-medium">PIN Code:</span> {applicationData.pincode}</div>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <input type="checkbox" id="terms" className="rounded" />
-                  <label htmlFor="terms" className="text-sm text-gray-600">
-                    I agree to the terms and conditions and privacy policy
-                  </label>
-                </div>
-                <div className="flex justify-between">
-                  <Button variant="outline" onClick={handlePreviousStep}>
-                    Previous
-                  </Button>
-                  <Button onClick={handleApplicationSubmit}>
+                  <Button className="bg-gradient-to-r from-blue-600 to-indigo-600">
                     Submit Application
                   </Button>
                 </div>
               </div>
-            )}
+            </div>
           </Card>
         </div>
       </div>
@@ -471,117 +311,196 @@ const LoansPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16 animate-fade-in">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 pt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Loan Solutions</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Competitive rates, quick approvals, and flexible terms for all your financial needs. 
-            Choose from our comprehensive range of loan products designed to help you achieve your goals.
-          </p>
+        {/* Hero Section with Professional Design */}
+        <div className="text-center mb-20">
+          <div className="relative">
+            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-900 via-purple-900 to-indigo-900 bg-clip-text text-transparent mb-6">
+              Premium Loan Solutions
+            </h1>
+            <p className="text-xl text-gray-600 max-w-4xl mx-auto mb-12 leading-relaxed">
+              Experience next-generation financial services with competitive rates, instant approvals, 
+              and personalized solutions designed for your success.
+            </p>
+          </div>
+          
+          {/* Enhanced Statistics Grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            {loanStats.map((stat, index) => {
+              const IconComponent = stat.icon;
+              return (
+                <div key={index} className="bg-white rounded-2xl shadow-xl p-8 text-center transform hover:scale-105 transition-all duration-300">
+                  <div className={`bg-gradient-to-r ${stat.color} w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-6 shadow-lg`}>
+                    <IconComponent className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="text-3xl font-bold text-gray-900 mb-2">{stat.number}</div>
+                  <div className="text-gray-600 font-medium">{stat.label}</div>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Loans Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        {/* Premium Loans Grid with Professional Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
           {loans.map((loan, index) => {
             const Icon = loan.icon;
             return (
-              <Card key={index} className="h-full flex flex-col">
+              <Card key={index} className="h-full flex flex-col overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:scale-105 bg-white border-0 shadow-xl">
                 <div className="flex flex-col h-full">
-                  {/* Header */}
-                  <div className="flex items-center mb-4">
-                    <div className={`w-12 h-12 bg-gradient-to-r ${loan.gradient} rounded-xl flex items-center justify-center mr-4`}>
-                      <Icon className="w-6 h-6 text-white" />
+                  {/* Professional Image Header */}
+                  <div className="relative h-64 overflow-hidden">
+                    <img 
+                      src={loan.image} 
+                      alt={loan.type}
+                      className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
+                      <div className={`absolute top-6 right-6 w-14 h-14 bg-gradient-to-r ${loan.gradient} rounded-2xl flex items-center justify-center shadow-lg`}>
+                        <Icon className="w-7 h-7 text-white" />
+                      </div>
+                      <div className="absolute bottom-6 left-6 bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
+                        <span className="text-lg font-bold text-gray-900">From {loan.rate}*</span>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900">{loan.type}</h3>
-                      <p className="text-primary-600 font-semibold">Starting from {loan.rate}*</p>
+                  </div>
+
+                  <div className="p-8 flex flex-col flex-grow">
+                    {/* Header */}
+                    <div className="mb-6">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-3">{loan.type}</h3>
+                      <p className="text-gray-600 leading-relaxed">{loan.description}</p>
                     </div>
+
+                    {/* Loan Details */}
+                    <div className="bg-gray-50 rounded-xl p-4 mb-6">
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-gray-500">Max Amount:</span>
+                          <div className="font-semibold text-gray-900">{loan.maxAmount}</div>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Tenure:</span>
+                          <div className="font-semibold text-gray-900">{loan.tenure}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Features */}
+                    <div className="mb-6 flex-grow">
+                      <h4 className="font-bold text-gray-800 mb-4">Key Features:</h4>
+                      <ul className="space-y-3">
+                        {loan.features.map((feature, idx) => (
+                          <li key={idx} className="flex items-center text-gray-600">
+                            <CheckCircle className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                            <span className="text-sm">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Apply Button */}
+                    <Button
+                      onClick={() => handleLoanSelect(loan.type)}
+                      className={`w-full mt-auto bg-gradient-to-r ${loan.gradient} hover:shadow-lg transform hover:scale-105 transition-all duration-300`}
+                      icon={ArrowRight}
+                      iconPosition="right"
+                    >
+                      Apply Now
+                    </Button>
                   </div>
-
-                  <p className="text-gray-600 mb-6 flex-grow">{loan.description}</p>
-
-                  {/* Features */}
-                  <div className="mb-6">
-                    <h4 className="font-semibold text-gray-800 mb-3">Key Features:</h4>
-                    <ul className="space-y-2">
-                      {loan.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-center text-sm text-gray-600">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Eligibility */}
-                  <div className="mb-6">
-                    <h4 className="font-semibold text-gray-800 mb-3">Eligibility:</h4>
-                    <ul className="space-y-1">
-                      {loan.eligibility.map((criteria, idx) => (
-                        <li key={idx} className="text-xs text-gray-500 flex items-center">
-                          <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mr-2"></div>
-                          {criteria}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Apply Button */}
-                  <Button
-                    onClick={() => handleLoanSelect(loan.type)}
-                    className="w-full mt-auto"
-                    icon={ArrowRight}
-                    iconPosition="right"
-                  >
-                    Apply for {loan.type}
-                  </Button>
                 </div>
               </Card>
             );
           })}
         </div>
 
-        {/* EMI Calculator */}
-        <div className="mb-16">
-          <EMICalculator />
-        </div>
-
-        {/* Process Steps */}
-        <Card className="mb-16">
-          <div className="text-center mb-8">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">Simple Application Process</h3>
-            <p className="text-gray-600">Get your loan approved in just 4 easy steps</p>
+        {/* Customer Testimonials */}
+        <div className="mb-20">
+          <div className="text-center mb-12">
+            <h3 className="text-4xl font-bold text-gray-900 mb-4">What Our Customers Say</h3>
+            <p className="text-gray-600 text-lg">Real experiences from real customers</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[
-              { step: '1', title: 'Apply Online', description: 'Fill out our simple online application form' },
-              { step: '2', title: 'Document Upload', description: 'Upload required documents securely' },
-              { step: '3', title: 'Quick Verification', description: 'Our team verifies your application within 24 hours' },
-              { step: '4', title: 'Get Approved', description: 'Receive funds directly in your bank account' },
-            ].map((process, index) => (
-              <div key={index} className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 bg-primary-100 rounded-full flex items-center justify-center">
-                  <span className="text-2xl font-bold text-primary-600">{process.step}</span>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <Card key={index} className="p-6 bg-white shadow-xl border-0">
+                <div className="flex items-center mb-4">
+                  <img 
+                    src={testimonial.image} 
+                    alt={testimonial.name}
+                    className="w-12 h-12 rounded-full object-cover mr-4"
+                  />
+                  <div>
+                    <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
+                    <p className="text-gray-500 text-sm">{testimonial.location}</p>
+                  </div>
                 </div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-2">{process.title}</h4>
-                <p className="text-gray-600 text-sm">{process.description}</p>
-              </div>
+                <div className="flex mb-3">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-600 text-sm mb-3">"{testimonial.comment}"</p>
+                <span className="text-xs text-blue-600 font-medium">{testimonial.loanType}</span>
+              </Card>
             ))}
           </div>
-        </Card>
+        </div>
+
+        {/* Why Choose Us */}
+        <div className="mb-20">
+          <div className="text-center mb-12">
+            <h3 className="text-4xl font-bold text-gray-900 mb-4">Why Choose FinBridge?</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {whyChooseUs.map((item, index) => {
+              const IconComponent = item.icon;
+              return (
+                <div key={index} className="text-center">
+                  <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <IconComponent className="w-10 h-10 text-white" />
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-900 mb-3">{item.title}</h4>
+                  <p className="text-gray-600 text-sm">{item.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* EMI Calculator Section */}
+        {showCalculator && (
+          <div className="mb-20">
+            <EMICalculator />
+          </div>
+        )}
 
         {/* CTA Section */}
-        <div className="text-center">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Ready to Apply?</h3>
-          <p className="text-gray-600 mb-8">Join thousands of satisfied customers who chose FinBridge for their loan needs</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" icon={ArrowRight} iconPosition="right">
-              Start Application
+        <div className="text-center bg-gradient-to-r from-blue-900 via-purple-900 to-indigo-900 text-white rounded-3xl p-16 shadow-2xl">
+          <h3 className="text-4xl font-bold mb-6">Ready to Transform Your Financial Future?</h3>
+          <p className="text-gray-200 mb-10 max-w-3xl mx-auto text-lg leading-relaxed">
+            Join thousands of satisfied customers who chose FinBridge for their loan needs. 
+            Experience instant approval, competitive rates, and world-class service.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <Button 
+              size="lg" 
+              icon={ArrowRight} 
+              iconPosition="right" 
+              className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 transform hover:scale-105 transition-all"
+              onClick={() => setShowCalculator(true)}
+            >
+              Calculate EMI
             </Button>
-            <Button size="lg" variant="outline">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-white text-white hover:bg-white hover:text-gray-900 transform hover:scale-105 transition-all"
+            >
+              <Phone className="w-5 h-5 mr-2" />
               Talk to Expert
             </Button>
           </div>

@@ -1,0 +1,226 @@
+/* Enhanced Loan Page Styles */
+.loan-card {
+  aspect-ratio: 16/9;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.loan-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.loan-card-image {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.loan-card:hover .loan-card-image {
+  transform: scale(1.05);
+}
+
+/* Enhanced Apply Button Styling */
+.loan-apply-button {
+  min-height: 56px;
+  padding: 16px 24px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.loan-apply-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.loan-hero-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 4rem 0;
+  border-radius: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.loan-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.loan-stat-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.loan-stat-card:hover {
+  transform: translateY(-4px);
+}
+
+.loan-application-form {
+  background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+  padding: 2rem;
+  border-radius: 1rem;
+  margin: 2rem 0;
+}
+
+.loan-application-header {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 320px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.loan-application-header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.loan-feature-list {
+  list-style: none;
+  padding: 0;
+}
+
+.loan-feature-list li {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.loan-feature-list li:last-child {
+  border-bottom: none;
+}
+
+.loan-cta-section {
+  background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 50%, #1e40af 100%);
+  color: white;
+  padding: 4rem 2rem;
+  border-radius: 1.5rem;
+  text-align: center;
+  margin: 3rem 0;
+}
+
+.loan-testimonial-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #3b82f6;
+}
+
+.loan-calculator-section {
+  background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
+  padding: 2rem;
+  border-radius: 1rem;
+  margin: 2rem 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .loan-card-image {
+    height: 200px;
+  }
+  
+  .loan-hero-section {
+    padding: 2rem 0;
+  }
+  
+  .loan-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .loan-stat-card {
+    padding: 1.5rem;
+  }
+
+  .loan-application-header {
+    height: 240px;
+    margin: 0 1rem;
+  }
+
+  .loan-apply-button {
+    min-height: 48px;
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .loan-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .loan-application-header {
+    height: 200px;
+  }
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.8s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Professional Card Gradients */
+.gradient-personal {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.gradient-business {
+  background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+}
+
+.gradient-education {
+  background: linear-gradient(135deg, #f59e0b 0%, #dc2626 100%);
+}
+
+.gradient-home {
+  background: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%);
+}
+
+.gradient-vehicle {
+  background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+}
+
+.gradient-mortgage {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}

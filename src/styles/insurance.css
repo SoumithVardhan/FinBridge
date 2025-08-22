@@ -1,0 +1,319 @@
+/* Enhanced Insurance Page Styles */
+.insurance-card {
+  aspect-ratio: 16/9;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.insurance-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.insurance-card-image {
+  width: 100%;
+  height: 256px;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.insurance-card:hover .insurance-card-image {
+  transform: scale(1.05);
+}
+
+/* Enhanced Quote Button Styling */
+.insurance-quote-button {
+  min-height: 56px;
+  padding: 16px 24px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.insurance-quote-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.insurance-hero-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 4rem 0;
+  border-radius: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.insurance-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.insurance-stat-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.insurance-stat-card:hover {
+  transform: translateY(-4px);
+}
+
+.insurance-quote-form {
+  background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+  padding: 2rem;
+  border-radius: 1rem;
+  margin: 2rem 0;
+}
+
+.insurance-quote-header {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 320px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.insurance-quote-header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.insurance-feature-list {
+  list-style: none;
+  padding: 0;
+}
+
+.insurance-feature-list li {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.insurance-feature-list li:last-child {
+  border-bottom: none;
+}
+
+.insurance-cta-section {
+  background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 50%, #1e40af 100%);
+  color: white;
+  padding: 4rem 2rem;
+  border-radius: 1.5rem;
+  text-align: center;
+  margin: 3rem 0;
+}
+
+.insurance-testimonial-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #3b82f6;
+  transition: all 0.3s ease;
+}
+
+.insurance-testimonial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.insurance-service-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.insurance-service-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.insurance-service-image {
+  width: 100%;
+  height: 192px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .insurance-card-image {
+    height: 200px;
+  }
+  
+  .insurance-hero-section {
+    padding: 2rem 0;
+  }
+  
+  .insurance-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .insurance-stat-card {
+    padding: 1.5rem;
+  }
+
+  .insurance-quote-header {
+    height: 240px;
+    margin: 0 1rem;
+  }
+
+  .insurance-quote-button {
+    min-height: 48px;
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+
+  .insurance-service-image {
+    height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .insurance-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .insurance-quote-header {
+    height: 200px;
+  }
+
+  .insurance-service-image {
+    height: 140px;
+  }
+}
+
+/* Animation Classes */
+.insurance-fade-in {
+  animation: insuranceFadeIn 0.6s ease-in-out;
+}
+
+@keyframes insuranceFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.insurance-slide-up {
+  animation: insuranceSlideUp 0.8s ease-out;
+}
+
+@keyframes insuranceSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Professional Insurance Type Gradients */
+.gradient-life {
+  background: linear-gradient(135deg, #ef4444 0%, #ec4899 100%);
+}
+
+.gradient-health {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.gradient-motor {
+  background: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%);
+}
+
+.gradient-home {
+  background: linear-gradient(135deg, #f59e0b 0%, #dc2626 100%);
+}
+
+.gradient-travel {
+  background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+}
+
+.gradient-general {
+  background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+}
+
+/* Quote Result Styling */
+.insurance-quote-result {
+  background: linear-gradient(145deg, #f0fdf4, #dcfce7);
+  border: 1px solid #bbf7d0;
+  border-radius: 16px;
+  padding: 2rem;
+  animation: insuranceSlideUp 0.6s ease-out;
+}
+
+.insurance-quote-premium {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #059669;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.insurance-quote-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.insurance-quote-detail-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Premium Enhancement Features */
+.insurance-floating-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.insurance-floating-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899, #f59e0b);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.insurance-floating-card:hover::before {
+  opacity: 1;
+}
+
+.insurance-glow-effect {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+.insurance-glow-effect:hover {
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+}
