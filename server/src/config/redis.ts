@@ -11,9 +11,14 @@ class RedisService {
       const redisUrl = process.env.REDIS_URL || 'redis://redis:6379';
       
       this.client = new Redis(redisUrl, {
-        retryDelayOnFailover: 1000,
         maxRetriesPerRequest: 3,
         lazyConnect: true,
+        connectTimeout: 10000,
+        commandTimeout: 5000,
+        retryStrategy: (times: number) => {
+          const delay = Math.min(times * 50, 2000);
+          return delay;
+        }
       });
 
       this.client.on('connect', () => {

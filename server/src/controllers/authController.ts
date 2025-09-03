@@ -95,28 +95,28 @@ export class AuthController {
         }
 
         console.log('✅ User uniqueness verified - no existing user found');
-      } catch (checkError) {
+      } catch (checkError: any) {
         console.error('❌ Error during user uniqueness check:', {
           error: checkError,
-          message: checkError.message,
-          stack: checkError.stack,
-          code: checkError.code
+          message: checkError?.message,
+          stack: checkError?.stack,
+          code: checkError?.code
         });
         
         // More specific error handling
-        if (checkError.code === 'P1001') {
+        if (checkError?.code === 'P1001') {
           res.status(500).json({
             success: false,
             message: 'Database authentication failed. Please try again.',
             code: 'DB_AUTH_ERROR'
           });
-        } else if (checkError.code === 'P1017') {
+        } else if (checkError?.code === 'P1017') {
           res.status(500).json({
             success: false,
             message: 'Database server connection lost. Please try again.',
             code: 'DB_CONNECTION_LOST'
           });
-        } else if (checkError.message.includes('relation "users" does not exist')) {
+        } else if (checkError?.message?.includes('relation "users" does not exist')) {
           res.status(500).json({
             success: false,
             message: 'Database tables not properly initialized. Please contact support.',
@@ -127,7 +127,7 @@ export class AuthController {
             success: false,
             message: 'Failed to verify user uniqueness. Please try again in a moment.',
             code: 'UNIQUENESS_CHECK_FAILED',
-            debug: process.env.NODE_ENV === 'development' ? checkError.message : undefined
+            debug: process.env.NODE_ENV === 'development' ? checkError?.message : undefined
           });
         }
         return;
@@ -193,16 +193,16 @@ export class AuthController {
             ...tokenPair
           }
         });
-      } catch (createError) {
+      } catch (createError: any) {
         console.error('❌ Error creating user:', {
           error: createError,
-          message: createError.message,
-          code: createError.code
+          message: createError?.message,
+          code: createError?.code
         });
         
         // Handle specific Prisma errors
-        if (createError.code === 'P2002') {
-          const field = createError.meta?.target?.includes('email') ? 'email' : 'phone number';
+        if (createError?.code === 'P2002') {
+          const field = createError?.meta?.target?.includes('email') ? 'email' : 'phone number';
           res.status(409).json({
             success: false,
             message: `A user with this ${field} already exists. Please try logging in.`,
@@ -213,23 +213,23 @@ export class AuthController {
             success: false,
             message: 'Failed to create account. Please try again.',
             code: 'USER_CREATION_FAILED',
-            debug: process.env.NODE_ENV === 'development' ? createError.message : undefined
+            debug: process.env.NODE_ENV === 'development' ? createError?.message : undefined
           });
         }
         return;
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Registration failed with unexpected error:', {
         error,
-        message: error.message,
-        stack: error.stack
+        message: error?.message,
+        stack: error?.stack
       });
       logger.error('Registration failed:', error);
       res.status(500).json({
         success: false,
         message: 'Registration failed due to server error. Please try again later.',
         code: 'INTERNAL_SERVER_ERROR',
-        debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+        debug: process.env.NODE_ENV === 'development' ? error?.message : undefined
       });
     } finally {
       // Ensure Prisma disconnects properly

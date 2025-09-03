@@ -412,10 +412,40 @@ const InsurancePage: React.FC = () => {
               insurance products designed to safeguard your future and provide peace of mind.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-white text-blue-900 hover:bg-blue-50 px-8 py-3 font-semibold">
+              <Button 
+                className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-4 font-semibold transform hover:scale-105 transition-all shadow-lg border-2 border-white"
+                style={{
+                  backgroundColor: '#dc2626',
+                  color: 'white',
+                  borderColor: 'white'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#b91c1c';
+                  e.currentTarget.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#dc2626';
+                  e.currentTarget.style.color = 'white';
+                }}
+              >
                 Get Free Quote
               </Button>
-              <Button className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-blue-900 px-8 py-3 font-semibold">
+              <Button 
+                className="border-2 border-white text-white bg-white/20 backdrop-blur-sm hover:bg-white hover:text-blue-900 px-8 py-4 font-semibold transform hover:scale-105 transition-all shadow-lg"
+                style={{
+                  borderColor: 'white',
+                  color: 'white',
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'white';
+                  e.currentTarget.style.color = '#1e40af';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                  e.currentTarget.style.color = 'white';
+                }}
+              >
                 Compare Plans
               </Button>
             </div>
@@ -429,7 +459,7 @@ const InsurancePage: React.FC = () => {
           {insuranceTypes.map((insurance, index) => {
             const Icon = insurance.icon;
             return (
-              <Card key={index} className="h-full flex flex-col hover:shadow-xl transition-shadow duration-300">
+              <Card key={index} className="h-full flex flex-col min-h-[480px] hover:shadow-xl transition-shadow duration-300">
                 <div className="flex flex-col h-full">
                   <div className="relative h-48">
                     <img 
@@ -478,8 +508,8 @@ const InsurancePage: React.FC = () => {
 
                     <Button
                       onClick={() => handleGetQuote(insurance.type)}
-                      className="w-full mt-auto"
-                      variant="secondary"
+                      className="w-full mt-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transform hover:scale-105 transition-all"
+                      variant="primary"
                       icon={ArrowRight}
                       iconPosition="right"
                     >
@@ -539,12 +569,21 @@ const InsurancePage: React.FC = () => {
               Compare different insurance plans side by side to find the perfect coverage that fits your needs and budget. 
               Our expert team will help you make an informed decision.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" icon={ArrowRight} iconPosition="right">
-                Compare Plans
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <Button 
+                size="lg" 
+                icon={ArrowRight} 
+                iconPosition="right"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-8 py-4 transform hover:scale-105 transition-all"
+              >
+                Get Quote Now
               </Button>
-              <Button size="lg" variant="outline">
-                Talk to Expert
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white bg-white font-semibold px-8 py-4 transform hover:scale-105 transition-all shadow-lg"
+              >
+                Compare Plans
               </Button>
             </div>
           </div>

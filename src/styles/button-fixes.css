@@ -1,0 +1,199 @@
+/* FinBridge UI Button Fixes */
+
+/* Universal button reset for Docker compatibility */
+button {
+  font-family: inherit !important;
+  outline: none !important;
+  cursor: pointer !important;
+}
+
+/* CIBIL Page Hero Section Button Fixes */
+.bg-gradient-to-r button,
+section[class*="gradient"] button,
+.hero-section button {
+  background: white !important;
+  color: #dc2626 !important;
+  border: 2px solid white !important;
+  font-weight: 600 !important;
+  padding: 0.75rem 2rem !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.3s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 48px !important;
+  text-decoration: none !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.bg-gradient-to-r button:hover,
+section[class*="gradient"] button:hover,
+.hero-section button:hover {
+  background: rgba(255, 255, 255, 0.9) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Secondary buttons on gradient backgrounds */
+.bg-gradient-to-r button[class*="outline"],
+section[class*="gradient"] button[class*="outline"] {
+  background: transparent !important;
+  color: white !important;
+  border: 2px solid white !important;
+}
+
+.bg-gradient-to-r button[class*="outline"]:hover,
+section[class*="gradient"] button[class*="outline"]:hover {
+  background: white !important;
+  color: #dc2626 !important;
+}
+
+/* Fix primary CTA buttons - orange gradient for Calculate EMI */
+.btn-primary-cta {
+  background: linear-gradient(135deg, #f59e0b, #ea580c) !important;
+  color: white !important;
+  border: 2px solid transparent !important;
+  font-weight: 600 !important;
+  padding: 1rem 2rem !important;
+  border-radius: 0.75rem !important;
+  transition: all 0.3s ease !important;
+  transform: scale(1) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 160px !important;
+  min-height: 48px !important;
+}
+
+.btn-primary-cta:hover {
+  background: linear-gradient(135deg, #ea580c, #dc2626) !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3) !important;
+  color: white !important;
+}
+
+/* Fix secondary CTA buttons - white outline on dark background */
+.btn-secondary-cta {
+  background: transparent !important;
+  color: white !important;
+  border: 2px solid white !important;
+  font-weight: 600 !important;
+  padding: 1rem 2rem !important;
+  border-radius: 0.75rem !important;
+  transition: all 0.3s ease !important;
+  transform: scale(1) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 160px !important;
+  min-height: 48px !important;
+}
+
+.btn-secondary-cta:hover {
+  background: white !important;
+  color: #1f2937 !important;
+  border-color: white !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Fix white buttons on light backgrounds */
+.btn-white-on-light {
+  background: white !important;
+  color: #dc2626 !important;
+  border: 2px solid white !important;
+  font-weight: 600 !important;
+  padding: 1rem 2rem !important;
+  border-radius: 0.75rem !important;
+  transition: all 0.3s ease !important;
+  transform: scale(1) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 160px !important;
+  min-height: 48px !important;
+}
+
+.btn-white-on-light:hover {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #b91c1c !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Fix blue outline buttons */
+.btn-outline-blue {
+  background: white !important;
+  color: #2563eb !important;
+  border: 2px solid #2563eb !important;
+  font-weight: 600 !important;
+  padding: 1rem 2rem !important;
+  border-radius: 0.75rem !important;
+  transition: all 0.3s ease !important;
+  transform: scale(1) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 160px !important;
+  min-height: 48px !important;
+}
+
+.btn-outline-blue:hover {
+  background: #2563eb !important;
+  color: white !important;
+  border-color: #2563eb !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3) !important;
+}
+
+/* Insurance card consistency */
+.insurance-card-container {
+  min-height: 520px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.insurance-card-button {
+  width: 100% !important;
+  padding: 0.875rem 1.5rem !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  margin-top: auto !important;
+}
+
+/* Ensure all buttons are visible and properly styled */
+button {
+  min-width: 120px !important;
+  min-height: 40px !important;
+}
+
+/* Fix any transparent or invisible text */
+.text-white {
+  color: white !important;
+}
+
+.bg-transparent {
+  background-color: transparent !important;
+}
+
+/* Fix red gradient buttons */
+.btn-red-gradient {
+  background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+  color: white !important;
+  border: 2px solid transparent !important;
+  font-weight: 600 !important;
+  padding: 1rem 2rem !important;
+  border-radius: 0.75rem !important;
+  transition: all 0.3s ease !important;
+  transform: scale(1) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.btn-red-gradient:hover {
+  background: linear-gradient(135deg, #b91c1c, #991b1b) !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 10px 25px rgba(220, 38, 38, 0.3) !important;
+  color: white !important;
+}

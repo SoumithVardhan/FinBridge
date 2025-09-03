@@ -488,9 +488,9 @@ const LoansPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Button 
               size="lg" 
-              icon={ArrowRight} 
+              icon={Calculator} 
               iconPosition="right" 
-              className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 transform hover:scale-105 transition-all"
+              className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold px-8 py-4 transform hover:scale-105 transition-all"
               onClick={() => setShowCalculator(true)}
             >
               Calculate EMI
@@ -498,7 +498,20 @@ const LoansPage: React.FC = () => {
             <Button 
               size="lg" 
               variant="outline" 
-              className="border-white text-white hover:bg-white hover:text-gray-900 transform hover:scale-105 transition-all"
+              className="border-2 border-white text-white bg-white/20 backdrop-blur-sm font-semibold px-8 py-4 transform hover:scale-105 transition-all shadow-lg"
+              style={{
+                borderColor: 'white',
+                color: 'white',
+                backgroundColor: 'rgba(255, 255, 255, 0.2)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'white';
+                e.currentTarget.style.color = '#111827';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                e.currentTarget.style.color = 'white';
+              }}
             >
               <Phone className="w-5 h-5 mr-2" />
               Talk to Expert

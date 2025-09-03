@@ -174,7 +174,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSectionChange }) => {
               </div>
 
               {/* Stats Overlay - MOVED MORE RIGHT AND DOWN */}
-              <div className="absolute -bottom-2 right-0 translate-x-12 bg-white backdrop-blur-lg rounded-2xl p-4 border border-gray-200 shadow-2xl z-30 w-52">
+              <div className="absolute -bottom-8 right-0 translate-x-20 bg-white backdrop-blur-lg rounded-2xl p-4 border border-gray-200 shadow-2xl z-30 w-52">
                 <div className="space-y-3">
                   {stats.slice(0, 2).map((stat, index) => {
                     const Icon = stat.icon;

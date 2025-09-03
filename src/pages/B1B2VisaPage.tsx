@@ -380,12 +380,12 @@ const B1B2VisaPage: React.FC = () => {
             Expert guidance from application to visa collection.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="bg-white text-red-600 hover:bg-red-50 hover:text-red-700 px-8 py-3 font-semibold border border-red-200">
+            <button className="bg-white text-red-600 border-2 border-white hover:bg-gray-100 hover:text-red-700 font-semibold px-8 py-4 rounded-xl shadow-lg transition-all duration-300 inline-flex items-center justify-center">
               Start Application
-            </Button>
-            <Button className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-red-600 px-8 py-3 font-semibold">
+            </button>
+            <button className="bg-white text-blue-600 border-2 border-blue-600 hover:bg-blue-600 hover:text-white font-semibold px-8 py-4 rounded-xl shadow-lg transition-all duration-300 inline-flex items-center justify-center">
               Free Consultation
-            </Button>
+            </button>
           </div>
         </div>
       </section>
@@ -516,12 +516,12 @@ const B1B2VisaPage: React.FC = () => {
             Get started with a free consultation. Our visa experts are here to guide you through every step.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Button className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 font-semibold">
+            <button className="bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-700 hover:to-red-800 font-semibold px-8 py-4 rounded-xl shadow-lg transition-all duration-300 inline-flex items-center justify-center">
               Start Application
-            </Button>
-            <Button className="border-2 border-red-600 text-red-600 bg-transparent hover:bg-red-600 hover:text-white px-8 py-3 font-semibold">
+            </button>
+            <button className="bg-white text-blue-600 border-2 border-blue-600 hover:bg-blue-600 hover:text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300 inline-flex items-center justify-center">
               Free Consultation
-            </Button>
+            </button>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center text-gray-600">

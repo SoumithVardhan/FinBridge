@@ -353,10 +353,16 @@ const CibilCoApplicantPage: React.FC = () => {
             for co-applicant and guarantor issues. Protect your financial future.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="bg-white text-red-600 hover:bg-red-50 hover:text-red-700 px-8 py-3 font-semibold border border-red-200">
+            <Button 
+              variant="outline" 
+              className="!bg-white !text-red-600 !border-white hover:!bg-red-50 hover:!text-red-700 px-8 py-3 font-semibold shadow-lg"
+            >
               Check Free CIBIL Score
             </Button>
-            <Button className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-red-600 px-8 py-3 font-semibold">
+            <Button 
+              variant="outline" 
+              className="!border-2 !border-white !text-white !bg-transparent hover:!bg-white hover:!text-red-600 px-8 py-3 font-semibold shadow-lg"
+            >
               Legal Consultation
             </Button>
           </div>
@@ -430,10 +436,16 @@ const CibilCoApplicantPage: React.FC = () => {
             Get professional assistance for CIBIL issues and co-applicant problems. Free consultation available.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Button className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 font-semibold">
+            <Button 
+              variant="primary" 
+              className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 font-semibold shadow-lg"
+            >
               Get Free Consultation
             </Button>
-            <Button className="border-2 border-red-600 text-red-600 bg-transparent hover:bg-red-600 hover:text-white px-8 py-3 font-semibold">
+            <Button 
+              variant="outline" 
+              className="!border-2 !border-red-600 !text-red-600 !bg-white hover:!bg-red-600 hover:!text-white px-8 py-3 font-semibold shadow-lg"
+            >
               Check CIBIL Score
             </Button>
           </div>

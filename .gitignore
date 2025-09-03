@@ -8,13 +8,21 @@ node_modules/
 .env.development.local
 .env.test.local
 .env.production.local
+.env.production
 .env.*.local
+server/.env
+server/.env.local
+server/.env.production
+server/.env.sqlite
+!.env.example
+!server/.env.example
 
 # Build outputs
 dist/
 build/
 .next/
 out/
+server/dist/
 
 # IDE files
 .vscode/
@@ -40,6 +48,8 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
+server/logs/
+server/logs/*.log
 
 # Runtime data
 pids
@@ -101,6 +111,10 @@ backup_archive/
 *.sqlite
 *.sqlite3
 *.db
+# SQL backups and database files
+*.sql
+*backup*.sql
+finbridge_backup_*.sql
 
 # Local Netlify folder
 .netlify
@@ -134,6 +148,19 @@ migrations/
 *.pfx
 secrets/
 credentials/
+
+# Upload directory contents (but keep the directory)
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Deployment scripts with sensitive info
+*deploy*.sh
+build-and-deploy.sh
+emergency-deploy.sh
+quick-deploy.sh
+test-build-deploy.sh
+universal-deploy.sh
+csp-fix-deploy.sh
 
 # Local development scripts
 cleanup-repo.sh
